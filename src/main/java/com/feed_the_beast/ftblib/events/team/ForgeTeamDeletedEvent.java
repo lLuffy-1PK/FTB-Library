@@ -7,18 +7,15 @@ import java.io.File;
 /**
  * @author LatvianModder
  */
-public class ForgeTeamDeletedEvent extends ForgeTeamEvent
-{
-	private final File folder;
+public class ForgeTeamDeletedEvent extends ForgeTeamEvent {
+    private final File folder;
 
-	public ForgeTeamDeletedEvent(ForgeTeam team, File f)
-	{
-		super(team);
-		folder = f;
-	}
+    public ForgeTeamDeletedEvent(ForgeTeam team, File f) {
+        super(team);
+        folder = f;
+    }
 
-	public File getDataFolder()
-	{
-		return folder;
-	}
+    public File getDataFolder() {
+        return folder;
+    }
 }

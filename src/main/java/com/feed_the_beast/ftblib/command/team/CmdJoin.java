@@ -22,85 +22,66 @@ import java.util.List;
 /**
  * @author LatvianModder
  */
-public class CmdJoin extends CmdBase
-{
-	public CmdJoin()
-	{
-		super("join", Level.ALL);
-	}
+public class CmdJoin extends CmdBase {
+    public CmdJoin() {
+        super("join", Level.ALL);
+    }
 
-	@Override
-	public List<String> getTabCompletions(MinecraftServer server, ICommandSender sender, String[] args, @Nullable BlockPos pos)
-	{
-		if (args.length == 1)
-		{
-			if (!FTBLibGameRules.canJoinTeam(server.getWorld(0)))
-			{
-				return Collections.emptyList();
-			}
+    @Override
+    public List<String> getTabCompletions(MinecraftServer server, ICommandSender sender, String[] args, @Nullable BlockPos pos) {
+        if (args.length == 1) {
+            if (!FTBLibGameRules.canJoinTeam(server.getWorld(0))) {
+                return Collections.emptyList();
+            }
 
-			List<String> list = new ArrayList<>();
+            List<String> list = new ArrayList<>();
 
-			try
-			{
-				ForgePlayer player = CommandUtils.getForgePlayer(sender);
+            try {
+                ForgePlayer player = CommandUtils.getForgePlayer(sender);
 
-				for (ForgeTeam team : Universe.get().getTeams())
-				{
-					if (team.addMember(player, true))
-					{
-						list.add(team.getId());
-					}
-				}
+                for (ForgeTeam team : Universe.get().getTeams()) {
+                    if (team.addMember(player, true)) {
+                        list.add(team.getId());
+                    }
+                }
 
-				if (list.size() > 1)
-				{
-					list.sort(null);
-				}
-			}
-			catch (Exception ex)
-			{
-				ex.printStackTrace();
-			}
+                if (list.size() > 1) {
+                    list.sort(null);
+                }
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
 
-			return getListOfStringsMatchingLastWord(args, list);
-		}
+            return getListOfStringsMatchingLastWord(args, list);
+        }
 
-		return super.getTabCompletions(server, sender, args, pos);
-	}
+        return super.getTabCompletions(server, sender, args, pos);
+    }
 
-	@Override
-	public void execute(MinecraftServer server, ICommandSender sender, String[] args) throws CommandException
-	{
-		if (!FTBLibGameRules.canJoinTeam(server.getWorld(0)))
-		{
-			throw FTBLib.error(sender, "feature_disabled_server");
-		}
+    @Override
+    public void execute(MinecraftServer server, ICommandSender sender, String[] args) throws CommandException {
+        if (!FTBLibGameRules.canJoinTeam(server.getWorld(0))) {
+            throw FTBLib.error(sender, "feature_disabled_server");
+        }
 
-		EntityPlayerMP player = getCommandSenderAsPlayer(sender);
-		ForgePlayer p = CommandUtils.getForgePlayer(player);
+        EntityPlayerMP player = getCommandSenderAsPlayer(sender);
+        ForgePlayer p = CommandUtils.getForgePlayer(player);
 
-		checkArgs(sender, args, 1);
+        checkArgs(sender, args, 1);
 
-		ForgeTeam team = CommandUtils.getTeam(sender, args[0]);
+        ForgeTeam team = CommandUtils.getTeam(sender, args[0]);
 
-		if (team.addMember(p, true))
-		{
-			if (p.team.isOwner(p))
-			{
-				new ForgeTeamChangedEvent(team, p.team).post();
-				p.team.removeMember(p);
-			}
-			else if (p.hasTeam())
-			{
-				throw FTBLib.error(sender, "ftblib.lang.team.error.must_leave");
-			}
+        if (team.addMember(p, true)) {
+            if (p.team.isOwner(p)) {
+                new ForgeTeamChangedEvent(team, p.team).post();
+                p.team.removeMember(p);
+            } else if (p.hasTeam()) {
+                throw FTBLib.error(sender, "ftblib.lang.team.error.must_leave");
+            }
 
-			team.addMember(p, false);
-		}
-		else
-		{
-			throw FTBLib.error(sender, "ftblib.lang.team.error.not_member", p.getDisplayName());
-		}
-	}
+            team.addMember(p, false);
+        } else {
+            throw FTBLib.error(sender, "ftblib.lang.team.error.not_member", p.getDisplayName());
+        }
+    }
 }

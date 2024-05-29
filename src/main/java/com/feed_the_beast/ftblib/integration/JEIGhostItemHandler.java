@@ -12,35 +12,28 @@ import java.util.List;
 /**
  * @author LatvianModder
  */
-public class JEIGhostItemHandler implements IGhostIngredientHandler<GuiContainerWrapper>
-{
-	@Override
-	public <I> List<Target<I>> getTargets(GuiContainerWrapper gui, I ingredient, boolean doStart)
-	{
-		List<Target<I>> list = new ArrayList<>();
-		getTargets(list, ingredient, gui.getGui());
-		Collections.reverse(list);
-		return list;
-	}
+public class JEIGhostItemHandler implements IGhostIngredientHandler<GuiContainerWrapper> {
+    @Override
+    public <I> List<Target<I>> getTargets(GuiContainerWrapper gui, I ingredient, boolean doStart) {
+        List<Target<I>> list = new ArrayList<>();
+        getTargets(list, ingredient, gui.getGui());
+        Collections.reverse(list);
+        return list;
+    }
 
-	private <I> void getTargets(List<Target<I>> list, Object ingredient, Panel panel)
-	{
-		for (Widget widget : panel.widgets)
-		{
-			if (widget.isGhostIngredientTarget(ingredient))
-			{
-				list.add((Target<I>) new WidgetTarget(widget));
-			}
+    private <I> void getTargets(List<Target<I>> list, Object ingredient, Panel panel) {
+        for (Widget widget : panel.widgets) {
+            if (widget.isGhostIngredientTarget(ingredient)) {
+                list.add((Target<I>) new WidgetTarget(widget));
+            }
 
-			if (widget instanceof Panel)
-			{
-				getTargets(list, ingredient, (Panel) widget);
-			}
-		}
-	}
+            if (widget instanceof Panel) {
+                getTargets(list, ingredient, (Panel) widget);
+            }
+        }
+    }
 
-	@Override
-	public void onComplete()
-	{
-	}
+    @Override
+    public void onComplete() {
+    }
 }

@@ -17,43 +17,35 @@ import java.util.List;
 /**
  * @author LatvianModder
  */
-public class CmdSettingsFor extends CmdBase
-{
-	public CmdSettingsFor()
-	{
-		super("settings_for", Level.OP);
-	}
+public class CmdSettingsFor extends CmdBase {
+    public CmdSettingsFor() {
+        super("settings_for", Level.OP);
+    }
 
-	@Override
-	public List<String> getTabCompletions(MinecraftServer server, ICommandSender sender, String[] args, @Nullable BlockPos pos)
-	{
-		if (args.length == 1)
-		{
-			List<String> list = new ArrayList<>();
+    @Override
+    public List<String> getTabCompletions(MinecraftServer server, ICommandSender sender, String[] args, @Nullable BlockPos pos) {
+        if (args.length == 1) {
+            List<String> list = new ArrayList<>();
 
-			for (ForgeTeam team : Universe.get().getTeams())
-			{
-				if (team.type.isServer)
-				{
-					list.add(team.getId());
-				}
-			}
+            for (ForgeTeam team : Universe.get().getTeams()) {
+                if (team.type.isServer) {
+                    list.add(team.getId());
+                }
+            }
 
-			return getListOfStringsMatchingLastWord(args, list);
-		}
+            return getListOfStringsMatchingLastWord(args, list);
+        }
 
-		return super.getTabCompletions(server, sender, args, pos);
-	}
+        return super.getTabCompletions(server, sender, args, pos);
+    }
 
-	@Override
-	public void execute(MinecraftServer server, ICommandSender sender, String[] args) throws CommandException
-	{
-		checkArgs(sender, args, 1);
-		ForgeTeam team = CommandUtils.getTeam(sender, args[0]);
+    @Override
+    public void execute(MinecraftServer server, ICommandSender sender, String[] args) throws CommandException {
+        checkArgs(sender, args, 1);
+        ForgeTeam team = CommandUtils.getTeam(sender, args[0]);
 
-		if (team.type.isServer)
-		{
-			FTBLibAPI.editServerConfig(getCommandSenderAsPlayer(sender), team.getSettings(), team);
-		}
-	}
+        if (team.type.isServer) {
+            FTBLibAPI.editServerConfig(getCommandSenderAsPlayer(sender), team.getSettings(), team);
+        }
+    }
 }

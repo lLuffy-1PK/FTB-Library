@@ -15,31 +15,26 @@ import java.util.List;
 /**
  * @author LatvianModder
  */
-public class MessageAdminPanelGui extends MessageToServer
-{
-	@Override
-	public NetworkWrapper getWrapper()
-	{
-		return FTBLibNetHandler.GENERAL;
-	}
+public class MessageAdminPanelGui extends MessageToServer {
+    @Override
+    public NetworkWrapper getWrapper() {
+        return FTBLibNetHandler.GENERAL;
+    }
 
-	@Override
-	public void onMessage(EntityPlayerMP player)
-	{
-		List<Action.Inst> actions = new ArrayList<>();
-		ForgePlayer p = Universe.get().getPlayer(player);
-		NBTTagCompound data = new NBTTagCompound();
+    @Override
+    public void onMessage(EntityPlayerMP player) {
+        List<Action.Inst> actions = new ArrayList<>();
+        ForgePlayer p = Universe.get().getPlayer(player);
+        NBTTagCompound data = new NBTTagCompound();
 
-		for (Action a : FTBLibCommon.ADMIN_PANEL_ACTIONS.values())
-		{
-			Action.Type type = a.getType(p, data);
+        for (Action a : FTBLibCommon.ADMIN_PANEL_ACTIONS.values()) {
+            Action.Type type = a.getType(p, data);
 
-			if (type.isVisible())
-			{
-				actions.add(new Action.Inst(a, type));
-			}
-		}
+            if (type.isVisible()) {
+                actions.add(new Action.Inst(a, type));
+            }
+        }
 
-		new MessageAdminPanelGuiResponse(actions).sendTo(player);
-	}
+        new MessageAdminPanelGuiResponse(actions).sendTo(player);
+    }
 }

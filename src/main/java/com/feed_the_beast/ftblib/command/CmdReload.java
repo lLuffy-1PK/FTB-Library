@@ -22,60 +22,49 @@ import java.util.List;
 /**
  * @author LatvianModder
  */
-public class CmdReload extends CmdBase
-{
-	private Collection<String> tab;
+public class CmdReload extends CmdBase {
+    private Collection<String> tab;
 
-	public CmdReload(String id, Level l)
-	{
-		super(id, l);
+    public CmdReload(String id, Level l) {
+        super(id, l);
 
-		tab = new HashSet<>();
-		tab.add("*");
+        tab = new HashSet<>();
+        tab.add("*");
 
-		for (ResourceLocation r : FTBLibCommon.RELOAD_IDS.keySet())
-		{
-			tab.add(r.toString());
-			tab.add(r.getNamespace() + ":*");
-		}
+        for (ResourceLocation r : FTBLibCommon.RELOAD_IDS.keySet()) {
+            tab.add(r.toString());
+            tab.add(r.getNamespace() + ":*");
+        }
 
-		tab = new ArrayList<>(tab);
-		((ArrayList<String>) tab).sort(null);
-	}
+        tab = new ArrayList<>(tab);
+        ((ArrayList<String>) tab).sort(null);
+    }
 
-	public CmdReload()
-	{
-		this(FTBLibConfig.general.replace_reload_command ? "reload" : "ftb_reload", Level.OP_OR_SP);
-	}
+    public CmdReload() {
+        this(FTBLibConfig.general.replace_reload_command ? "reload" : "ftb_reload", Level.OP_OR_SP);
+    }
 
-	@Override
-	public List<String> getTabCompletions(MinecraftServer server, ICommandSender sender, String[] args, @Nullable BlockPos pos)
-	{
-		if (args.length == 1)
-		{
-			return getListOfStringsMatchingLastWord(args, tab);
-		}
+    @Override
+    public List<String> getTabCompletions(MinecraftServer server, ICommandSender sender, String[] args, @Nullable BlockPos pos) {
+        if (args.length == 1) {
+            return getListOfStringsMatchingLastWord(args, tab);
+        }
 
-		return super.getTabCompletions(server, sender, args, pos);
-	}
+        return super.getTabCompletions(server, sender, args, pos);
+    }
 
-	@Override
-	public void execute(MinecraftServer server, ICommandSender sender, String[] args) throws CommandException
-	{
-		ResourceLocation id = ServerReloadEvent.ALL;
+    @Override
+    public void execute(MinecraftServer server, ICommandSender sender, String[] args) throws CommandException {
+        ResourceLocation id = ServerReloadEvent.ALL;
 
-		if (args.length >= 1)
-		{
-			if (args[0].indexOf(':') != -1)
-			{
-				id = new ResourceLocation(args[0]);
-			}
-			else if (!args[0].equals("*"))
-			{
-				id = new ResourceLocation(args[0] + ":*");
-			}
-		}
+        if (args.length >= 1) {
+            if (args[0].indexOf(':') != -1) {
+                id = new ResourceLocation(args[0]);
+            } else if (!args[0].equals("*")) {
+                id = new ResourceLocation(args[0] + ":*");
+            }
+        }
 
-		FTBLibAPI.reloadServer(Universe.get(), sender, EnumReloadType.RELOAD_COMMAND, id);
-	}
+        FTBLibAPI.reloadServer(Universe.get(), sender, EnumReloadType.RELOAD_COMMAND, id);
+    }
 }

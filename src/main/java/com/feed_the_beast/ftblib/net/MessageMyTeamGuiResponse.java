@@ -19,56 +19,47 @@ import java.util.Collection;
 /**
  * @author LatvianModder
  */
-public class MessageMyTeamGuiResponse extends MessageToClient
-{
-	private ITextComponent title;
-	private Collection<Action.Inst> actions;
+public class MessageMyTeamGuiResponse extends MessageToClient {
+    private ITextComponent title;
+    private Collection<Action.Inst> actions;
 
-	public MessageMyTeamGuiResponse()
-	{
-	}
+    public MessageMyTeamGuiResponse() {
+    }
 
-	public MessageMyTeamGuiResponse(ForgePlayer player)
-	{
-		title = player.team.getTitle();
-		actions = new ArrayList<>();
-		NBTTagCompound emptyData = new NBTTagCompound();
+    public MessageMyTeamGuiResponse(ForgePlayer player) {
+        title = player.team.getTitle();
+        actions = new ArrayList<>();
+        NBTTagCompound emptyData = new NBTTagCompound();
 
-		for (Action action : FTBLibCommon.TEAM_GUI_ACTIONS.values())
-		{
-			Action.Type type = action.getType(player, emptyData);
+        for (Action action : FTBLibCommon.TEAM_GUI_ACTIONS.values()) {
+            Action.Type type = action.getType(player, emptyData);
 
-			if (type.isVisible())
-			{
-				actions.add(new Action.Inst(action, type));
-			}
-		}
-	}
+            if (type.isVisible()) {
+                actions.add(new Action.Inst(action, type));
+            }
+        }
+    }
 
-	@Override
-	public NetworkWrapper getWrapper()
-	{
-		return FTBLibNetHandler.MY_TEAM;
-	}
+    @Override
+    public NetworkWrapper getWrapper() {
+        return FTBLibNetHandler.MY_TEAM;
+    }
 
-	@Override
-	public void writeData(DataOut data)
-	{
-		data.writeTextComponent(title);
-		data.writeCollection(actions, Action.Inst.SERIALIZER);
-	}
+    @Override
+    public void writeData(DataOut data) {
+        data.writeTextComponent(title);
+        data.writeCollection(actions, Action.Inst.SERIALIZER);
+    }
 
-	@Override
-	public void readData(DataIn data)
-	{
-		title = data.readTextComponent();
-		actions = data.readCollection(Action.Inst.DESERIALIZER);
-	}
+    @Override
+    public void readData(DataIn data) {
+        title = data.readTextComponent();
+        actions = data.readCollection(Action.Inst.DESERIALIZER);
+    }
 
-	@Override
-	@SideOnly(Side.CLIENT)
-	public void onMessage()
-	{
-		new GuiActionList(title.getFormattedText(), actions, id -> new MessageMyTeamAction(id, new NBTTagCompound()).sendToServer()).openGui();
-	}
+    @Override
+    @SideOnly(Side.CLIENT)
+    public void onMessage() {
+        new GuiActionList(title.getFormattedText(), actions, id -> new MessageMyTeamAction(id, new NBTTagCompound()).sendToServer()).openGui();
+    }
 }

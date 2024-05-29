@@ -9,30 +9,26 @@ import net.minecraft.util.ResourceLocation;
 /**
  * @author LatvianModder
  */
-public class FTBLibPreInitRegistryEvent extends FTBLibEvent
-{
-	public interface Registry
-	{
-		void registerConfigValueProvider(String id, ConfigValueProvider provider);
+public class FTBLibPreInitRegistryEvent extends FTBLibEvent {
+    public interface Registry {
+        void registerConfigValueProvider(String id, ConfigValueProvider provider);
 
-		void registerSyncData(String mod, ISyncData data);
+        void registerSyncData(String mod, ISyncData data);
 
-		void registerServerReloadHandler(ResourceLocation id, IReloadHandler handler);
+        void registerServerReloadHandler(ResourceLocation id, IReloadHandler handler);
 
-		void registerAdminPanelAction(AdminPanelAction action);
+        void registerAdminPanelAction(AdminPanelAction action);
 
-		void registerTeamAction(TeamAction action);
-	}
+        void registerTeamAction(TeamAction action);
+    }
 
-	private final Registry registry;
+    private final Registry registry;
 
-	public FTBLibPreInitRegistryEvent(Registry r)
-	{
-		registry = r;
-	}
+    public FTBLibPreInitRegistryEvent(Registry r) {
+        registry = r;
+    }
 
-	public Registry getRegistry()
-	{
-		return registry;
-	}
+    public Registry getRegistry() {
+        return registry;
+    }
 }

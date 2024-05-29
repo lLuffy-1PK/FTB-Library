@@ -11,25 +11,19 @@ import net.minecraft.entity.player.EntityPlayerMP;
 /**
  * @author LatvianModder
  */
-public class MessageMyTeamGui extends MessageToServer
-{
-	@Override
-	public NetworkWrapper getWrapper()
-	{
-		return FTBLibNetHandler.MY_TEAM;
-	}
+public class MessageMyTeamGui extends MessageToServer {
+    @Override
+    public NetworkWrapper getWrapper() {
+        return FTBLibNetHandler.MY_TEAM;
+    }
 
-	@Override
-	public void onMessage(EntityPlayerMP player)
-	{
-		if (!FTBLibGameRules.canCreateTeam(player.world) && !FTBLibGameRules.canJoinTeam(player.world))
-		{
-			FTBLibAPI.sendCloseGuiPacket(player);
-		}
-		else
-		{
-			ForgePlayer p = Universe.get().getPlayer(player);
-			(p.hasTeam() ? new MessageMyTeamGuiResponse(p) : new MessageSelectTeamGui(p, FTBLibGameRules.canCreateTeam(player.world))).sendTo(player);
-		}
-	}
+    @Override
+    public void onMessage(EntityPlayerMP player) {
+        if (!FTBLibGameRules.canCreateTeam(player.world) && !FTBLibGameRules.canJoinTeam(player.world)) {
+            FTBLibAPI.sendCloseGuiPacket(player);
+        } else {
+            ForgePlayer p = Universe.get().getPlayer(player);
+            (p.hasTeam() ? new MessageMyTeamGuiResponse(p) : new MessageSelectTeamGui(p, FTBLibGameRules.canCreateTeam(player.world))).sendTo(player);
+        }
+    }
 }

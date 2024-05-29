@@ -11,21 +11,17 @@ import net.minecraftforge.fml.common.gameevent.TickEvent;
  * @author LatvianModder
  */
 @Mod.EventBusSubscriber(modid = FTBLib.MOD_ID)
-public class FTBLibEventHandler
-{
-	@SubscribeEvent
-	public static void onPlayerTick(TickEvent.PlayerTickEvent event)
-	{
-		if (event.player.ticksExisted % 5 == 2 && event.player instanceof EntityPlayerMP)
-		{
-			byte opState = event.player.getEntityData().getByte("FTBLibOP");
-			byte newOpState = ServerUtils.isOP((EntityPlayerMP) event.player) ? (byte) 2 : (byte) 1;
+public class FTBLibEventHandler {
+    @SubscribeEvent
+    public static void onPlayerTick(TickEvent.PlayerTickEvent event) {
+        if (event.player.ticksExisted % 5 == 2 && event.player instanceof EntityPlayerMP) {
+            byte opState = event.player.getEntityData().getByte("FTBLibOP");
+            byte newOpState = ServerUtils.isOP((EntityPlayerMP) event.player) ? (byte) 2 : (byte) 1;
 
-			if (opState != newOpState)
-			{
-				event.player.getEntityData().setByte("FTBLibOP", newOpState);
-				Universe.get().clearCache();
-			}
-		}
-	}
+            if (opState != newOpState) {
+                event.player.getEntityData().setByte("FTBLibOP", newOpState);
+                Universe.get().clearCache();
+            }
+        }
+    }
 }

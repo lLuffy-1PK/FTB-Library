@@ -5,10 +5,8 @@ import com.feed_the_beast.ftblib.lib.data.ForgeTeam;
 /**
  * @author LatvianModder
  */
-public class ForgeTeamCreatedEvent extends ForgeTeamEvent
-{
-	public ForgeTeamCreatedEvent(ForgeTeam team)
-	{
-		super(team);
-	}
+public class ForgeTeamCreatedEvent extends ForgeTeamEvent {
+    public ForgeTeamCreatedEvent(ForgeTeam team) {
+        super(team);
+    }
 }

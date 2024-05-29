@@ -13,51 +13,43 @@ import javax.annotation.Nullable;
 /**
  * @author LatvianModder
  */
-public class BlockGuiHandler implements IGuiHandler
-{
-	private final Int2ObjectOpenHashMap<BlockGuiSupplier> map = new Int2ObjectOpenHashMap<>();
+public class BlockGuiHandler implements IGuiHandler {
+    private final Int2ObjectOpenHashMap<BlockGuiSupplier> map = new Int2ObjectOpenHashMap<>();
 
-	public void add(BlockGuiSupplier h)
-	{
-		map.put(h.id, h);
-	}
+    public void add(BlockGuiSupplier h) {
+        map.put(h.id, h);
+    }
 
-	@Nullable
-	@Override
-	public Object getServerGuiElement(int ID, EntityPlayer player, World world, int x, int y, int z)
-	{
-		BlockGuiSupplier supplier = map.get(ID);
+    @Nullable
+    @Override
+    public Object getServerGuiElement(int ID, EntityPlayer player, World world, int x, int y, int z) {
+        BlockGuiSupplier supplier = map.get(ID);
 
-		if (supplier != null)
-		{
-			TileEntity tileEntity = world.getTileEntity(new BlockPos(x, y, z));
+        if (supplier != null) {
+            TileEntity tileEntity = world.getTileEntity(new BlockPos(x, y, z));
 
-			if (tileEntity != null)
-			{
-				return supplier.getContainer(player, tileEntity);
-			}
-		}
+            if (tileEntity != null) {
+                return supplier.getContainer(player, tileEntity);
+            }
+        }
 
-		return null;
-	}
+        return null;
+    }
 
-	@Nullable
-	@Override
-	public Object getClientGuiElement(int ID, EntityPlayer player, World world, int x, int y, int z)
-	{
-		BlockGuiSupplier supplier = map.get(ID);
+    @Nullable
+    @Override
+    public Object getClientGuiElement(int ID, EntityPlayer player, World world, int x, int y, int z) {
+        BlockGuiSupplier supplier = map.get(ID);
 
-		if (supplier != null)
-		{
-			TileEntity tileEntity = world.getTileEntity(new BlockPos(x, y, z));
+        if (supplier != null) {
+            TileEntity tileEntity = world.getTileEntity(new BlockPos(x, y, z));
 
-			if (tileEntity != null)
-			{
-				Container container = supplier.getContainer(player, tileEntity);
-				return container == null ? null : supplier.getGui(container);
-			}
-		}
+            if (tileEntity != null) {
+                Container container = supplier.getContainer(player, tileEntity);
+                return container == null ? null : supplier.getGui(container);
+            }
+        }
 
-		return null;
-	}
+        return null;
+    }
 }

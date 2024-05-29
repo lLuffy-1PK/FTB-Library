@@ -14,21 +14,17 @@ import java.util.Map;
 /**
  * @author LatvianModder
  */
-public final class ClientATHelper
-{
-	@Nullable
-	public static ResourceLocation getFontUnicodePage(int page)
-	{
-		return FontRenderer.UNICODE_PAGE_LOCATIONS[page];
-	}
+public final class ClientATHelper {
+    @Nullable
+    public static ResourceLocation getFontUnicodePage(int page) {
+        return FontRenderer.UNICODE_PAGE_LOCATIONS[page];
+    }
 
-	public static Map<ChatType, List<IChatListener>> getChatListeners()
-	{
-		return Minecraft.getMinecraft().ingameGUI.chatListeners;
-	}
+    public static Map<ChatType, List<IChatListener>> getChatListeners() {
+        return Minecraft.getMinecraft().ingameGUI.chatListeners;
+    }
 
-	public static Map<String, TextureAtlasSprite> getRegisteredSpritesMap()
-	{
-		return Minecraft.getMinecraft().getTextureMapBlocks().mapRegisteredSprites;
-	}
+    public static Map<String, TextureAtlasSprite> getRegisteredSpritesMap() {
+        return Minecraft.getMinecraft().getTextureMapBlocks().mapRegisteredSprites;
+    }
 }

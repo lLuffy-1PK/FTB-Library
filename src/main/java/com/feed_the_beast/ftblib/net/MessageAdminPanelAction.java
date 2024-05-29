@@ -15,51 +15,42 @@ import net.minecraft.util.ResourceLocation;
 /**
  * @author LatvianModder
  */
-public class MessageAdminPanelAction extends MessageToServer
-{
-	private ResourceLocation action;
+public class MessageAdminPanelAction extends MessageToServer {
+    private ResourceLocation action;
 
-	public MessageAdminPanelAction()
-	{
-	}
+    public MessageAdminPanelAction() {
+    }
 
-	public MessageAdminPanelAction(ResourceLocation id)
-	{
-		action = id;
-	}
+    public MessageAdminPanelAction(ResourceLocation id) {
+        action = id;
+    }
 
-	@Override
-	public NetworkWrapper getWrapper()
-	{
-		return FTBLibNetHandler.GENERAL;
-	}
+    @Override
+    public NetworkWrapper getWrapper() {
+        return FTBLibNetHandler.GENERAL;
+    }
 
-	@Override
-	public void writeData(DataOut data)
-	{
-		data.writeResourceLocation(action);
-	}
+    @Override
+    public void writeData(DataOut data) {
+        data.writeResourceLocation(action);
+    }
 
-	@Override
-	public void readData(DataIn data)
-	{
-		action = data.readResourceLocation();
-	}
+    @Override
+    public void readData(DataIn data) {
+        action = data.readResourceLocation();
+    }
 
-	@Override
-	public void onMessage(EntityPlayerMP player)
-	{
-		Action a = FTBLibCommon.ADMIN_PANEL_ACTIONS.get(action);
+    @Override
+    public void onMessage(EntityPlayerMP player) {
+        Action a = FTBLibCommon.ADMIN_PANEL_ACTIONS.get(action);
 
-		if (a != null)
-		{
-			ForgePlayer p = Universe.get().getPlayer(player);
-			NBTTagCompound data = new NBTTagCompound();
+        if (a != null) {
+            ForgePlayer p = Universe.get().getPlayer(player);
+            NBTTagCompound data = new NBTTagCompound();
 
-			if (a.getType(p, data).isEnabled())
-			{
-				a.onAction(p, data);
-			}
-		}
-	}
+            if (a.getType(p, data).isEnabled()) {
+                a.onAction(p, data);
+            }
+        }
+    }
 }

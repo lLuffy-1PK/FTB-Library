@@ -14,45 +14,39 @@ import java.util.Map;
 /**
  * @author LatvianModder
  */
-public enum DefaultRankConfigHandler implements IRankConfigHandler
-{
-	INSTANCE;
+public enum DefaultRankConfigHandler implements IRankConfigHandler {
+    INSTANCE;
 
-	private static final Map<String, RankConfigValueInfo> MAP = new HashMap<>();
-	private static Collection<RankConfigValueInfo> VALUES = Collections.unmodifiableCollection(MAP.values());
+    private static final Map<String, RankConfigValueInfo> MAP = new HashMap<>();
+    private static final Collection<RankConfigValueInfo> VALUES = Collections.unmodifiableCollection(MAP.values());
 
-	@Override
-	public void registerRankConfig(RankConfigValueInfo info)
-	{
-		Preconditions.checkNotNull(info, "RankConfigValueInfo can't be null!");
-		Preconditions.checkArgument(!MAP.containsKey(info.node), "Duplicate rank config ID found: " + info.node);
-		MAP.put(info.node, info);
-	}
+    @Override
+    public void registerRankConfig(RankConfigValueInfo info) {
+        Preconditions.checkNotNull(info, "RankConfigValueInfo can't be null!");
+        Preconditions.checkArgument(!MAP.containsKey(info.node), "Duplicate rank config ID found: " + info.node);
+        MAP.put(info.node, info);
+    }
 
-	@Override
-	public Collection<RankConfigValueInfo> getRegisteredConfigs()
-	{
-		return VALUES;
-	}
+    @Override
+    public Collection<RankConfigValueInfo> getRegisteredConfigs() {
+        return VALUES;
+    }
 
-	@Override
-	public ConfigValue getConfigValue(MinecraftServer server, GameProfile profile, String node)
-	{
-		RankConfigValueInfo info = RankConfigAPI.getHandler().getInfo(node);
+    @Override
+    public ConfigValue getConfigValue(MinecraftServer server, GameProfile profile, String node) {
+        RankConfigValueInfo info = RankConfigAPI.getHandler().getInfo(node);
 
-		if (info != null)
-		{
-			return ServerUtils.isOP(server, profile) ? info.defaultOPValue : info.defaultValue;
-		}
+        if (info != null) {
+            return ServerUtils.isOP(server, profile) ? info.defaultOPValue : info.defaultValue;
+        }
 
-		return ConfigNull.INSTANCE;
-	}
+        return ConfigNull.INSTANCE;
+    }
 
-	@Override
-	@Nullable
-	public RankConfigValueInfo getInfo(String node)
-	{
-		Preconditions.checkNotNull(node, "Config node can't be null!");
-		return MAP.get(node);
-	}
+    @Override
+    @Nullable
+    public RankConfigValueInfo getInfo(String node) {
+        Preconditions.checkNotNull(node, "Config node can't be null!");
+        return MAP.get(node);
+    }
 }

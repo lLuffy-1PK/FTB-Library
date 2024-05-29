@@ -6,17 +6,14 @@ import com.feed_the_beast.ftblib.lib.data.Universe;
 /**
  * @author LatvianModder
  */
-public abstract class UniverseEvent extends FTBLibEvent
-{
-	private final Universe universe;
+public abstract class UniverseEvent extends FTBLibEvent {
+    private final Universe universe;
 
-	public UniverseEvent(Universe u)
-	{
-		universe = u;
-	}
+    public UniverseEvent(Universe u) {
+        universe = u;
+    }
 
-	public Universe getUniverse()
-	{
-		return universe;
-	}
+    public Universe getUniverse() {
+        return universe;
+    }
 }

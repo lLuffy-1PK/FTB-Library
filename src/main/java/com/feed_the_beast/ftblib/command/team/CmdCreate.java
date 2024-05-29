@@ -19,95 +19,77 @@ import net.minecraft.server.MinecraftServer;
 /**
  * @author LatvianModder
  */
-public class CmdCreate extends CmdBase
-{
-	public CmdCreate()
-	{
-		super("create", Level.ALL);
-	}
+public class CmdCreate extends CmdBase {
+    public CmdCreate() {
+        super("create", Level.ALL);
+    }
 
-	public static boolean isValidTeamID(String s)
-	{
-		if (!s.isEmpty())
-		{
-			for (int i = 0; i < s.length(); i++)
-			{
-				if (!isValidChar(s.charAt(i)))
-				{
-					return false;
-				}
-			}
+    public static boolean isValidTeamID(String s) {
+        if (!s.isEmpty()) {
+            for (int i = 0; i < s.length(); i++) {
+                if (!isValidChar(s.charAt(i))) {
+                    return false;
+                }
+            }
 
-			return true;
-		}
+            return true;
+        }
 
-		return false;
-	}
+        return false;
+    }
 
-	private static boolean isValidChar(char c)
-	{
-		return c == '_' || c == '|' || (c >= 'a' && c <= 'z') || (c >= '0' && c <= '9');
-	}
+    private static boolean isValidChar(char c) {
+        return c == '_' || c == '|' || (c >= 'a' && c <= 'z') || (c >= '0' && c <= '9');
+    }
 
-	@Override
-	public void execute(MinecraftServer server, ICommandSender sender, String[] args) throws CommandException
-	{
-		if (!FTBLibGameRules.canCreateTeam(server.getWorld(0)))
-		{
-			throw FTBLib.error(sender, "feature_disabled_server");
-		}
+    @Override
+    public void execute(MinecraftServer server, ICommandSender sender, String[] args) throws CommandException {
+        if (!FTBLibGameRules.canCreateTeam(server.getWorld(0))) {
+            throw FTBLib.error(sender, "feature_disabled_server");
+        }
 
-		EntityPlayerMP player = getCommandSenderAsPlayer(sender);
-		ForgePlayer p = CommandUtils.getForgePlayer(player);
+        EntityPlayerMP player = getCommandSenderAsPlayer(sender);
+        ForgePlayer p = CommandUtils.getForgePlayer(player);
 
-		if (p.hasTeam())
-		{
-			throw FTBLib.error(sender, "ftblib.lang.team.error.must_leave");
-		}
+        if (p.hasTeam()) {
+            throw FTBLib.error(sender, "ftblib.lang.team.error.must_leave");
+        }
 
-		checkArgs(sender, args, 1);
+        checkArgs(sender, args, 1);
 
-		if (!isValidTeamID(args[0]))
-		{
-			throw FTBLib.error(sender, "ftblib.lang.team.id_invalid");
-		}
+        if (!isValidTeamID(args[0])) {
+            throw FTBLib.error(sender, "ftblib.lang.team.id_invalid");
+        }
 
-		if (p.team.universe.getTeam(args[0]).isValid())
-		{
-			throw FTBLib.error(sender, "ftblib.lang.team.id_already_exists");
-		}
+        if (p.team.universe.getTeam(args[0]).isValid()) {
+            throw FTBLib.error(sender, "ftblib.lang.team.id_already_exists");
+        }
 
-		p.team.universe.clearCache();
+        p.team.universe.clearCache();
 
-		ForgeTeam team = new ForgeTeam(p.team.universe, p.team.universe.generateTeamUID((short) 0), args[0], TeamType.PLAYER);
+        ForgeTeam team = new ForgeTeam(p.team.universe, p.team.universe.generateTeamUID((short) 0), args[0], TeamType.PLAYER);
 
-		if (args.length > 1)
-		{
-			team.setColor(EnumTeamColor.NAME_MAP.get(args[1]));
-		}
-		else
-		{
-			team.setColor(EnumTeamColor.NAME_MAP.getRandom(sender.getEntityWorld().rand));
-		}
+        if (args.length > 1) {
+            team.setColor(EnumTeamColor.NAME_MAP.get(args[1]));
+        } else {
+            team.setColor(EnumTeamColor.NAME_MAP.getRandom(sender.getEntityWorld().rand));
+        }
 
-		p.team = team;
-		team.owner = p;
-		team.universe.addTeam(team);
-		new ForgeTeamCreatedEvent(team).post();
-		ForgeTeamPlayerJoinedEvent event = new ForgeTeamPlayerJoinedEvent(p);
-		event.post();
-		sender.sendMessage(FTBLib.lang(sender, "ftblib.lang.team.created", team.getId()));
+        p.team = team;
+        team.owner = p;
+        team.universe.addTeam(team);
+        new ForgeTeamCreatedEvent(team).post();
+        ForgeTeamPlayerJoinedEvent event = new ForgeTeamPlayerJoinedEvent(p);
+        event.post();
+        sender.sendMessage(FTBLib.lang(sender, "ftblib.lang.team.created", team.getId()));
 
-		if (event.getDisplayGui() != null)
-		{
-			event.getDisplayGui().run();
-		}
-		else
-		{
-			new MessageMyTeamGuiResponse(p).sendTo(player);
-		}
+        if (event.getDisplayGui() != null) {
+            event.getDisplayGui().run();
+        } else {
+            new MessageMyTeamGuiResponse(p).sendTo(player);
+        }
 
-		team.markDirty();
-		p.markDirty();
-	}
+        team.markDirty();
+        p.markDirty();
+    }
 }

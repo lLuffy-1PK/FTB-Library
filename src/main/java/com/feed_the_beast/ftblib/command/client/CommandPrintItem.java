@@ -16,37 +16,31 @@ import net.minecraft.util.text.event.ClickEvent;
 import java.util.Arrays;
 import java.util.HashSet;
 
-public class CommandPrintItem extends CmdBase
-{
-	public CommandPrintItem()
-	{
-		super("print_item", Level.ALL);
-	}
+public class CommandPrintItem extends CmdBase {
+    public CommandPrintItem() {
+        super("print_item", Level.ALL);
+    }
 
-	@Override
-	public void execute(MinecraftServer server, ICommandSender sender, final String[] args) throws CommandException
-	{
-		if (!(sender instanceof EntityPlayer))
-		{
-			return;
-		}
+    @Override
+    public void execute(MinecraftServer server, ICommandSender sender, final String[] args) throws CommandException {
+        if (!(sender instanceof EntityPlayer)) {
+            return;
+        }
 
-		ItemStack stack = ((EntityPlayer) sender).getHeldItem(EnumHand.MAIN_HAND);
+        ItemStack stack = ((EntityPlayer) sender).getHeldItem(EnumHand.MAIN_HAND);
 
-		if (stack.isEmpty())
-		{
-			return;
-		}
+        if (stack.isEmpty()) {
+            return;
+        }
 
-		HashSet<String> argsSet = new HashSet<>(Arrays.asList(args));
+        HashSet<String> argsSet = new HashSet<>(Arrays.asList(args));
 
-		ITextComponent component = new TextComponentString(stack.getDisplayName() + " :: " + NBTUtils.getColoredNBTString(stack.serializeNBT()));
-		component.getStyle().setClickEvent(new ClickEvent(ClickEvent.Action.SUGGEST_COMMAND, stack.serializeNBT().toString()));
-		sender.sendMessage(component);
+        ITextComponent component = new TextComponentString(stack.getDisplayName() + " :: " + NBTUtils.getColoredNBTString(stack.serializeNBT()));
+        component.getStyle().setClickEvent(new ClickEvent(ClickEvent.Action.SUGGEST_COMMAND, stack.serializeNBT().toString()));
+        sender.sendMessage(component);
 
-		if (argsSet.contains("copy"))
-		{
-			GuiScreen.setClipboardString(stack.serializeNBT().toString());
-		}
-	}
+        if (argsSet.contains("copy")) {
+            GuiScreen.setClipboardString(stack.serializeNBT().toString());
+        }
+    }
 }

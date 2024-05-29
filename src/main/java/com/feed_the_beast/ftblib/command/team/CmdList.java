@@ -11,21 +11,17 @@ import net.minecraft.server.MinecraftServer;
 /**
  * @author LatvianModder
  */
-public class CmdList extends CmdBase
-{
-	public CmdList()
-	{
-		super("list", Level.ALL);
-	}
+public class CmdList extends CmdBase {
+    public CmdList() {
+        super("list", Level.ALL);
+    }
 
-	@Override
-	public void execute(MinecraftServer server, ICommandSender sender, String[] args) throws CommandException
-	{
-		sender.sendMessage(FTBLib.lang(sender, "commands.team.list.teams", Universe.get().getTeams().size()));
+    @Override
+    public void execute(MinecraftServer server, ICommandSender sender, String[] args) throws CommandException {
+        sender.sendMessage(FTBLib.lang(sender, "commands.team.list.teams", Universe.get().getTeams().size()));
 
-		for (ForgeTeam team : Universe.get().getTeams())
-		{
-			sender.sendMessage(team.getCommandTitle());
-		}
-	}
+        for (ForgeTeam team : Universe.get().getTeams()) {
+            sender.sendMessage(team.getCommandTitle());
+        }
+    }
 }

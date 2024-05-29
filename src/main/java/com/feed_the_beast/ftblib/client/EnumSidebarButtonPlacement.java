@@ -6,23 +6,20 @@ import net.minecraftforge.fml.common.Loader;
 /**
  * @author LatvianModder
  */
-public enum EnumSidebarButtonPlacement
-{
-	DISABLED,
-	TOP_LEFT,
-	INVENTORY_SIDE,
-	AUTO;
+public enum EnumSidebarButtonPlacement {
+    DISABLED,
+    TOP_LEFT,
+    INVENTORY_SIDE,
+    AUTO;
 
-	public boolean top()
-	{
-		switch (this)
-		{
-			case TOP_LEFT:
-				return true;
-			case AUTO:
-				return !Loader.isModLoaded(OtherMods.NEI);
-			default:
-				return false;
-		}
-	}
+    public boolean top() {
+        switch (this) {
+            case TOP_LEFT:
+                return true;
+            case AUTO:
+                return !Loader.isModLoaded(OtherMods.NEI);
+            default:
+                return false;
+        }
+    }
 }

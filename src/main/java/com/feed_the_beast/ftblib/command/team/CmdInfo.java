@@ -20,59 +20,49 @@ import java.util.List;
 /**
  * @author LatvianModder
  */
-public class CmdInfo extends CmdBase
-{
-	public CmdInfo()
-	{
-		super("info", Level.ALL);
-	}
+public class CmdInfo extends CmdBase {
+    public CmdInfo() {
+        super("info", Level.ALL);
+    }
 
-	@Override
-	public List<String> getTabCompletions(MinecraftServer server, ICommandSender sender, String[] args, @Nullable BlockPos pos)
-	{
-		if (args.length == 1)
-		{
-			return getListOfStringsMatchingLastWord(args, Universe.get().getTeams());
-		}
+    @Override
+    public List<String> getTabCompletions(MinecraftServer server, ICommandSender sender, String[] args, @Nullable BlockPos pos) {
+        if (args.length == 1) {
+            return getListOfStringsMatchingLastWord(args, Universe.get().getTeams());
+        }
 
-		return super.getTabCompletions(server, sender, args, pos);
-	}
+        return super.getTabCompletions(server, sender, args, pos);
+    }
 
-	@Override
-	public void execute(MinecraftServer server, ICommandSender sender, String[] args) throws CommandException
-	{
-		checkArgs(sender, args, 1);
-		ForgeTeam team = Universe.get().getTeam(args[0]);
+    @Override
+    public void execute(MinecraftServer server, ICommandSender sender, String[] args) throws CommandException {
+        checkArgs(sender, args, 1);
+        ForgeTeam team = Universe.get().getTeam(args[0]);
 
-		if (!team.isValid())
-		{
-			throw FTBLib.error(sender, "ftblib.lang.team.error.not_found", args[0]);
-		}
+        if (!team.isValid()) {
+            throw FTBLib.error(sender, "ftblib.lang.team.error.not_found", args[0]);
+        }
 
-		sender.sendMessage(FTBLib.lang(sender, "commands.team.info.id", StringUtils.color(new TextComponentString(team.getId()), TextFormatting.BLUE)));
-		sender.sendMessage(FTBLib.lang(sender, "commands.team.info.uid", StringUtils.color(new TextComponentString(team.getUID() + " / " + String.format("%04x", team.getUID())), TextFormatting.BLUE)));
-		sender.sendMessage(FTBLib.lang(sender, "commands.team.info.owner", team.getOwner() == null ? "-" : StringUtils.color(team.getOwner().getDisplayName(), TextFormatting.BLUE)));
+        sender.sendMessage(FTBLib.lang(sender, "commands.team.info.id", StringUtils.color(new TextComponentString(team.getId()), TextFormatting.BLUE)));
+        sender.sendMessage(FTBLib.lang(sender, "commands.team.info.uid", StringUtils.color(new TextComponentString(team.getUID() + " / " + String.format("%04x", team.getUID())), TextFormatting.BLUE)));
+        sender.sendMessage(FTBLib.lang(sender, "commands.team.info.owner", team.getOwner() == null ? "-" : StringUtils.color(team.getOwner().getDisplayName(), TextFormatting.BLUE)));
 
-		ITextComponent component = new TextComponentString("");
-		component.getStyle().setColor(TextFormatting.GOLD);
-		boolean first = true;
+        ITextComponent component = new TextComponentString("");
+        component.getStyle().setColor(TextFormatting.GOLD);
+        boolean first = true;
 
-		for (ForgePlayer player : team.getMembers())
-		{
-			if (first)
-			{
-				first = false;
-			}
-			else
-			{
-				component.appendText(", ");
-			}
+        for (ForgePlayer player : team.getMembers()) {
+            if (first) {
+                first = false;
+            } else {
+                component.appendText(", ");
+            }
 
-			ITextComponent n = player.getDisplayName();
-			n.getStyle().setColor(TextFormatting.BLUE);
-			component.appendSibling(n);
-		}
+            ITextComponent n = player.getDisplayName();
+            n.getStyle().setColor(TextFormatting.BLUE);
+            component.appendSibling(n);
+        }
 
-		sender.sendMessage(FTBLib.lang(sender, "commands.team.info.members", component));
-	}
+        sender.sendMessage(FTBLib.lang(sender, "commands.team.info.members", component));
+    }
 }

@@ -8,19 +8,16 @@ import javax.annotation.Nullable;
 /**
  * @author LatvianModder
  */
-public class ForgeTeamOwnerChangedEvent extends ForgeTeamEvent
-{
-	private final ForgePlayer oldOwner;
+public class ForgeTeamOwnerChangedEvent extends ForgeTeamEvent {
+    private final ForgePlayer oldOwner;
 
-	public ForgeTeamOwnerChangedEvent(ForgeTeam team, @Nullable ForgePlayer o0)
-	{
-		super(team);
-		oldOwner = o0;
-	}
+    public ForgeTeamOwnerChangedEvent(ForgeTeam team, @Nullable ForgePlayer o0) {
+        super(team);
+        oldOwner = o0;
+    }
 
-	@Nullable
-	public ForgePlayer getOldOwner()
-	{
-		return oldOwner;
-	}
+    @Nullable
+    public ForgePlayer getOldOwner() {
+        return oldOwner;
+    }
 }

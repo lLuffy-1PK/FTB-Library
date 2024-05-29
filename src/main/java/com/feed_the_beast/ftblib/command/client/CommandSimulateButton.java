@@ -10,16 +10,13 @@ import net.minecraft.server.MinecraftServer;
 /**
  * @author LatvianModder
  */
-public class CommandSimulateButton extends CmdBase
-{
-	public CommandSimulateButton()
-	{
-		super("ftblib_simulate_button", Level.ALL);
-	}
+public class CommandSimulateButton extends CmdBase {
+    public CommandSimulateButton() {
+        super("ftblib_simulate_button", Level.ALL);
+    }
 
-	@Override
-	public void execute(MinecraftServer server, ICommandSender sender, String[] args) throws CommandException
-	{
-		GuiHelper.BLANK_GUI.handleClick(StringUtils.joinSpaceUntilEnd(0, args));
-	}
+    @Override
+    public void execute(MinecraftServer server, ICommandSender sender, String[] args) throws CommandException {
+        GuiHelper.BLANK_GUI.handleClick(StringUtils.joinSpaceUntilEnd(0, args));
+    }
 }

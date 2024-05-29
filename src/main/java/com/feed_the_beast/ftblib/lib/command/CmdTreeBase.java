@@ -9,72 +9,59 @@ import net.minecraftforge.server.command.CommandTreeBase;
 /**
  * @author LatvianModder
  */
-public class CmdTreeBase extends CommandTreeBase implements ICommandWithParent
-{
-	private final String name;
-	private ICommand parent;
+public class CmdTreeBase extends CommandTreeBase implements ICommandWithParent {
+    private final String name;
+    private ICommand parent;
 
-	public CmdTreeBase(String n)
-	{
-		name = n;
-	}
+    public CmdTreeBase(String n) {
+        name = n;
+    }
 
-	@Override
-	public void addSubcommand(ICommand command)
-	{
-		super.addSubcommand(command);
+    @Override
+    public void addSubcommand(ICommand command) {
+        super.addSubcommand(command);
 
-		if (command instanceof ICommandWithParent)
-		{
-			((ICommandWithParent) command).setParent(this);
-		}
-	}
+        if (command instanceof ICommandWithParent) {
+            ((ICommandWithParent) command).setParent(this);
+        }
+    }
 
-	@Override
-	public final String getName()
-	{
-		return name;
-	}
+    @Override
+    public final String getName() {
+        return name;
+    }
 
-	@Override
-	public int getRequiredPermissionLevel()
-	{
-		int level = 4;
+    @Override
+    public int getRequiredPermissionLevel() {
+        int level = 4;
 
-		for (ICommand command : getSubCommands())
-		{
-			if (command instanceof CommandBase)
-			{
-				level = Math.min(level, ((CommandBase) command).getRequiredPermissionLevel());
-			}
-		}
+        for (ICommand command : getSubCommands()) {
+            if (command instanceof CommandBase) {
+                level = Math.min(level, ((CommandBase) command).getRequiredPermissionLevel());
+            }
+        }
 
-		return level;
-	}
+        return level;
+    }
 
-	@Override
-	public boolean checkPermission(MinecraftServer server, ICommandSender sender)
-	{
-		for (ICommand command : getSubCommands())
-		{
-			if (command.checkPermission(server, sender))
-			{
-				return true;
-			}
-		}
+    @Override
+    public boolean checkPermission(MinecraftServer server, ICommandSender sender) {
+        for (ICommand command : getSubCommands()) {
+            if (command.checkPermission(server, sender)) {
+                return true;
+            }
+        }
 
-		return false;
-	}
+        return false;
+    }
 
-	@Override
-	public ICommand getParent()
-	{
-		return parent;
-	}
+    @Override
+    public ICommand getParent() {
+        return parent;
+    }
 
-	@Override
-	public void setParent(ICommand c)
-	{
-		parent = c;
-	}
+    @Override
+    public void setParent(ICommand c) {
+        parent = c;
+    }
 }
