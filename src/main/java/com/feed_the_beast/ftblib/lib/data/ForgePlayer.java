@@ -399,31 +399,31 @@ public class ForgePlayer implements INBTSerializable<NBTTagCompound>, Comparable
         return RankConfigAPI.get(team.universe.server, getProfile(), node);
     }
 
-    public File getDataFile(String ext) {
-        File dir = new File(team.universe.getWorldDirectory(), "data/ftb_lib/players/");
-
-        if (ext.isEmpty()) {
-            return new File(dir, getName().toLowerCase() + ".dat");
-        }
-
-        File extFolder = new File(dir, ext);
-
-        if (!extFolder.exists()) {
-            extFolder.mkdirs();
-        }
-
-        File extFile = new File(extFolder, getName().toLowerCase() + ".dat");
-
-        if (!extFile.exists()) {
-            File oldExtFile = new File(dir, getName().toLowerCase() + "." + ext + ".dat");
-
-            if (oldExtFile.exists()) {
-                oldExtFile.renameTo(extFile);
-            }
-        }
-
-        return extFile;
-    }
+//    public File getDataFile(String ext) {
+//        File dir = new File(team.universe.getWorldDirectory(), "data/ftb_lib/players/");
+//
+//        if (ext.isEmpty()) {
+//            return new File(dir, getName().toLowerCase() + ".dat");
+//        }
+//
+//        File extFolder = new File(dir, ext);
+//
+//        if (!extFolder.exists()) {
+//            extFolder.mkdirs();
+//        }
+//
+//        File extFile = new File(extFolder, getName().toLowerCase() + ".dat");
+//
+//        if (!extFile.exists()) {
+//            File oldExtFile = new File(dir, getName().toLowerCase() + "." + ext + ".dat");
+//
+//            if (oldExtFile.exists()) {
+//                oldExtFile.renameTo(extFile);
+//            }
+//        }
+//
+//        return extFile;
+//    }
 
     @Override
     public void onConfigSaved(ConfigGroup group, ICommandSender sender) {

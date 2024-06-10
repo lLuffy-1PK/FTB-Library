@@ -5,14 +5,13 @@ buildscript {
 		maven { url "https://plugins.gradle.org/m2/" }
 	}
 	dependencies {
-		classpath 'net.minecraftforge.gradle:ForgeGradle:2.3-SNAPSHOT'
-		classpath 'gradle.plugin.com.matthewprenger:CurseGradle:1.1.0'
+		classpath('com.anatawa12.forge:ForgeGradle:2.3-1.0.+') {
+			changing = true
+		}
 	}
 }
 
 apply plugin: 'net.minecraftforge.gradle.forge'
-apply plugin: 'com.matthewprenger.cursegradle'
-apply plugin: 'maven'
 
 def ENV = System.getenv()
 version = ENV.BUILD_NUMBER ? "${mod_version}.${ENV.BUILD_NUMBER}" : "${mod_version}.2"
@@ -25,21 +24,16 @@ compileJava {
 }
 
 minecraft {
-	version = "${mc_version}-${forge_version}"
+	version = "1.12.2-14.23.5.2838"
 	runDir = "run"
 	mappings = "${mappings_version}"
 
-	replace "0.0.0.forge", min_forge_version
 	replace "0.0.0.ftblib", project.version
 	replaceIn "${mod_reference}"
 }
 
-repositories {
-	maven { url "https://dvs1.progwml6.com/files/maven" } //JEI
-}
-
 dependencies {
-	compile "mezz.jei:jei_${mc_version}:${jei_version}"
+	compileOnly fileTree(dir: project.lib, include: ['*.jar'], exclude: ['*-sources.jar'])
 }
 
 processResources {
@@ -65,3 +59,10 @@ jar {
 artifacts {
 	archives sourceJar
 }
+
+tasks.register('deobfJar', Jar) {
+	from sourceSets.main.output
+	archiveClassifier.set('deobf')
+}
+
+build.finalizedBy deobfJar

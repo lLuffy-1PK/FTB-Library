@@ -580,32 +580,32 @@ public class ForgeTeam extends FinalIDObject implements INBTSerializable<NBTTagC
         return false;
     }
 
-    public File getDataFile(String ext) {
-        File dir = new File(universe.getWorldDirectory(), "data/ftb_lib/teams/");
-
-        if (ext.isEmpty()) {
-            return new File(dir, getId() + ".dat");
-        }
-
-        File extFolder = new File(dir, ext);
-
-        if (!extFolder.exists()) {
-            extFolder.mkdirs();
-        }
-
-        File extFile = new File(extFolder, getId() + ".dat");
-
-        if (!extFile.exists()) {
-            File oldExtFile = new File(dir, getId() + "." + ext + ".dat");
-
-            if (oldExtFile.exists()) {
-                oldExtFile.renameTo(extFile);
-                oldExtFile.deleteOnExit();
-            }
-        }
-
-        return extFile;
-    }
+//    public File getDataFile(String ext) {
+//        File dir = new File(universe.getWorldDirectory(), "data/ftb_lib/teams/");
+//
+//        if (ext.isEmpty()) {
+//            return new File(dir, getId() + ".dat");
+//        }
+//
+//        File extFolder = new File(dir, ext);
+//
+//        if (!extFolder.exists()) {
+//            extFolder.mkdirs();
+//        }
+//
+//        File extFile = new File(extFolder, getId() + ".dat");
+//
+//        if (!extFile.exists()) {
+//            File oldExtFile = new File(dir, getId() + "." + ext + ".dat");
+//
+//            if (oldExtFile.exists()) {
+//                oldExtFile.renameTo(extFile);
+//                oldExtFile.deleteOnExit();
+//            }
+//        }
+//
+//        return extFile;
+//    }
 
     @Override
     public void onConfigSaved(ConfigGroup group, ICommandSender sender) {
