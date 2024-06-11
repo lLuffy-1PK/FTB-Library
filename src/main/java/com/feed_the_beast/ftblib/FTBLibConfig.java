@@ -32,7 +32,7 @@ public class FTBLibConfig {
         @Config.Comment({"Merges player profiles, in case player logged in without internet connection/in offline mode server.", "If set to DEFAULT, it will only merge on singleplayer worlds."})
         public EnumTristate merge_offline_mode_players = EnumTristate.TRUE;
 
-        @Config.Comment("")
+        @Config.Comment("uri for connect to mongodb")
         public String mongoUri = "mongodb://user:password@ip:27017/?tls=false";
     }
 
