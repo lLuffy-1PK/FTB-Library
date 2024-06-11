@@ -5,8 +5,6 @@ import com.mongodb.client.MongoCursor;
 import net.minecraft.nbt.NBTTagCompound;
 import org.bson.Document;
 
-import java.util.UUID;
-
 import static com.mongodb.client.model.Filters.eq;
 import static tech.funkyra.ftb.DBUtil.toDocument;
 import static tech.funkyra.ftb.Database.ftbDb;

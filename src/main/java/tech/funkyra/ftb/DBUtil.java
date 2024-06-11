@@ -9,8 +9,6 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.Base64;
 
-import static com.mongodb.client.model.Filters.eq;
-
 public class DBUtil {
 	public static String toDocument(NBTTagCompound nbt) {
 		try {

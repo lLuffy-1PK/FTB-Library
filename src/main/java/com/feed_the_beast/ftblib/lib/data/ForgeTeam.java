@@ -25,7 +25,6 @@ import net.minecraftforge.common.util.Constants;
 import net.minecraftforge.common.util.INBTSerializable;
 
 import javax.annotation.Nullable;
-import java.io.File;
 import java.util.*;
 import java.util.regex.Pattern;
 
