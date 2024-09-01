@@ -34,6 +34,9 @@ public class FTBLibConfig {
 
         @Config.Comment("uri for connect to mongodb")
         public String mongoUri = "mongodb://user:password@ip:27017/?tls=false";
+
+        @Config.Comment("database for mongodb")
+        public String mongoDatabase = "ftb";
     }
 
     public static class Teams {

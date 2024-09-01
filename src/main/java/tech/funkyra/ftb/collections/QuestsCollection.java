@@ -13,9 +13,9 @@ import static tech.funkyra.ftb.Database.queryOption;
 public class QuestsCollection {
 	private static final MongoCollection<Document> teamRewardsCollection = ftbDb.getCollection("quests");
 
-	public static NBTTagCompound getData(short uid) {
+	public static NBTTagCompound getData(String teamID) {
 		try {
-			Document data = teamRewardsCollection.find(eq("uid", uid)).first();
+			Document data = teamRewardsCollection.find(eq("teamID", teamID)).first();
 			assert data != null;
 
 			return fromDocument(data);
@@ -24,11 +24,11 @@ public class QuestsCollection {
 		}
 	}
 
-	public static boolean setData(short uid, NBTTagCompound data) {
+	public static boolean setData(String teamID, NBTTagCompound data) {
 		try {
-			Document doc = new Document("uid", uid).append("nbt", toDocument(data));
+			Document doc = new Document("teamID", teamID).append("nbt", toDocument(data));
 
-			return teamRewardsCollection.replaceOne(eq("uid", uid), doc, queryOption).wasAcknowledged();
+			return teamRewardsCollection.replaceOne(eq("teamID", teamID), doc, queryOption).wasAcknowledged();
 		} catch (Exception err) {
 			err.printStackTrace();
 			return false;

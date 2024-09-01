@@ -446,32 +446,33 @@ public class ForgeTeam extends FinalIDObject implements INBTSerializable<NBTTagC
     }
 
     public boolean removeMember(ForgePlayer player) {
-        if (!isValid() || !isMember(player)) {
-            return false;
-        } else if (getMembers().size() == 1) {
-            universe.clearCache();
-            new ForgeTeamPlayerLeftEvent(player).post();
-
-            if (type.isPlayer) {
-                delete();
-            } else {
-                setStatus(player, EnumTeamStatus.NONE);
-            }
-
-            player.team = universe.getTeam("");
-            player.markDirty();
-            markDirty();
-        } else if (isOwner(player)) {
-            return false;
-        }
-
-        universe.clearCache();
-        new ForgeTeamPlayerLeftEvent(player).post();
-        player.team = universe.getTeam("");
-        setStatus(player, EnumTeamStatus.NONE);
-        player.markDirty();
-        markDirty();
-        return true;
+//        if (!isValid() || !isMember(player)) {
+//            return false;
+//        } else if (getMembers().size() == 1) {
+//            universe.clearCache();
+//            new ForgeTeamPlayerLeftEvent(player).post();
+//
+//            if (type.isPlayer) {
+//                delete();
+//            } else {
+//                setStatus(player, EnumTeamStatus.NONE);
+//            }
+//
+//            player.team = universe.getTeam("");
+//            player.markDirty();
+//            markDirty();
+//        } else if (isOwner(player)) {
+//            return false;
+//        }
+//
+//        universe.clearCache();
+//        new ForgeTeamPlayerLeftEvent(player).post();
+//        player.team = universe.getTeam("");
+//        setStatus(player, EnumTeamStatus.NONE);
+//        player.markDirty();
+//        markDirty();
+//        return true;
+        return false;
     }
 
     public void delete() {

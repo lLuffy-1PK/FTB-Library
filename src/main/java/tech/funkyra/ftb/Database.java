@@ -13,7 +13,7 @@ public class Database {
 		new ConnectionString(general.mongoUri);
 
 	private static final MongoClient mongo = MongoClients.create(connectionStr);
-	public static final MongoDatabase ftbDb = mongo.getDatabase("ftb");
+	public static final MongoDatabase ftbDb = mongo.getDatabase(general.mongoDatabase);
 
 	public static final ReplaceOptions queryOption = new ReplaceOptions().upsert(true);
 

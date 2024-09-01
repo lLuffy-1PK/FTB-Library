@@ -503,9 +503,11 @@ public class Universe {
 			p.onLoggedIn(player, this, true);
 		} else {
 			if (!p.getId().equals(player.getUniqueID()) || !p.getName().equals(player.getName())) {
+//				File old = p.getDataFile("");
 				players.remove(p.getId());
 				p.profile = new GameProfile(player.getUniqueID(), player.getName());
 				players.put(p.getId(), p);
+//				old.renameTo(p.getDataFile(""));
 				p.markDirty();
 				p.team.markDirty();
 				markDirty();
@@ -682,12 +684,12 @@ public class Universe {
 
 	public void removeTeam(ForgeTeam team) {
 //        File folder = new File(getWorldDirectory(), "data/ftb_lib/teams/");
-//        new ForgeTeamDeletedEvent(team, folder).post();
-		teamMap.remove(team.getUID());
-		teams.remove(team.getId());
-		deleteTeam(team.getUID());
-		markDirty();
-		clearCache();
+//		new ForgeTeamDeletedEvent(team).post();
+//		teamMap.remove(team.getUID());
+//		teams.remove(team.getId());
+//		deleteTeam(team.getUID());
+//		markDirty();
+//		clearCache();
 	}
 
 	public short generateTeamUID(short id) {

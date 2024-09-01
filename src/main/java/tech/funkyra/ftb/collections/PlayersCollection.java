@@ -11,7 +11,7 @@ import static tech.funkyra.ftb.Database.ftbDb;
 import static tech.funkyra.ftb.Database.queryOption;
 
 public class PlayersCollection {
-	private static final MongoCollection<Document> playersCollection = ftbDb.getCollection("players");
+	private static final MongoCollection<Document> playersCollection = ftbDb.getCollection("ftbplayers");
 
 	public static boolean updatePlayer(short teamUID, String teamID, String uuid, String nick, NBTTagCompound nbt) {
 		Document data = new Document("teamUID", teamUID)
