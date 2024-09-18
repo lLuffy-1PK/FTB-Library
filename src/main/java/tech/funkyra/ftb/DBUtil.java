@@ -4,12 +4,13 @@ import net.minecraft.nbt.CompressedStreamTools;
 import net.minecraft.nbt.NBTTagCompound;
 import org.bson.Document;
 
+import javax.annotation.Nonnull;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.util.Base64;
 
 public class DBUtil {
-	public static String toDocument(NBTTagCompound nbt) {
+	public static String toDocument(@Nonnull NBTTagCompound nbt) {
 		try {
 			ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
 			CompressedStreamTools.writeCompressed(nbt, byteArrayOutputStream);
@@ -21,11 +22,11 @@ public class DBUtil {
 		}
 	}
 
-	public static NBTTagCompound fromDocument(Document document) {
+	public static NBTTagCompound fromDocument(@Nonnull Document document) {
 		try {
 			String playerNBT = document.getString("player");
 
-			assert playerNBT != null;
+			if (playerNBT == null) return new NBTTagCompound();
 
 			byte[] data = Base64.getDecoder().decode(playerNBT);
 			ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(data);

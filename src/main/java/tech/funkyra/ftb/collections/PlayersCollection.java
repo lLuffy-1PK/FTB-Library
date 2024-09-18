@@ -5,6 +5,8 @@ import com.mongodb.client.MongoCursor;
 import net.minecraft.nbt.NBTTagCompound;
 import org.bson.Document;
 
+import javax.annotation.Nonnull;
+
 import static com.mongodb.client.model.Filters.eq;
 import static tech.funkyra.ftb.DBUtil.fromDocument;
 import static tech.funkyra.ftb.DBUtil.toDocument;
@@ -14,13 +16,8 @@ import static tech.funkyra.ftb.Database.queryOption;
 public class PlayersCollection {
 	private static final MongoCollection<Document> playersCollection = ftbDb.getCollection("ftbplayers");
 
-	public static boolean updatePlayer(short teamUID, String teamID, String uuid, String nick, NBTTagCompound nbt) {
+	public static boolean updatePlayer(short teamUID, @Nonnull String teamID, @Nonnull String uuid, @Nonnull String nick, NBTTagCompound nbt) {
 		try {
-			assert teamID != null;
-			assert uuid != null;
-			assert nick != null;
-			assert nbt != null;
-
 			Document data = new Document("teamUID", teamUID)
 				.append("teamID", teamID)
 				.append("uuid", uuid)
@@ -38,7 +35,7 @@ public class PlayersCollection {
 		return playersCollection.find().iterator();
 	}
 
-	public static NBTTagCompound getPlayerIfExists(String uuid) {
+	public static NBTTagCompound getPlayerIfExists(@Nonnull String uuid) {
 		try {
 			Document data = playersCollection.find(eq("uuid", uuid)).first();
 			assert data != null;
