@@ -3,7 +3,6 @@ package com.feed_the_beast.ftblib.lib.data;
 import com.feed_the_beast.ftblib.FTBLib;
 import com.feed_the_beast.ftblib.FTBLibConfig;
 import com.feed_the_beast.ftblib.events.ServerReloadEvent;
-import com.feed_the_beast.ftblib.events.player.ForgePlayerLoadedEvent;
 import com.feed_the_beast.ftblib.events.team.ForgeTeamLoadedEvent;
 import com.feed_the_beast.ftblib.events.universe.*;
 import com.feed_the_beast.ftblib.lib.ATHelper;
@@ -20,7 +19,6 @@ import com.feed_the_beast.ftblib.lib.util.misc.TimeType;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.mojang.authlib.GameProfile;
-import com.mongodb.client.MongoCursor;
 import it.unimi.dsi.fastutil.shorts.Short2ObjectOpenHashMap;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayerMP;
@@ -39,17 +37,14 @@ import net.minecraftforge.fml.common.eventhandler.EventPriority;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.PlayerEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
-import org.bson.Document;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.io.File;
 import java.util.*;
 
-import static tech.funkyra.ftb.DBUtil.fromDocument;
-import static tech.funkyra.ftb.collections.PlayersCollection.getAllPlayers;
-import static tech.funkyra.ftb.collections.PlayersCollection.updatePlayer;
-import static tech.funkyra.ftb.collections.TeamsCollection.*;
+import static tech.funkyra.ftb.collections.PlayersCollection.getPlayerIfExists;
+import static tech.funkyra.ftb.collections.TeamsCollection.getTeamById;
 
 /**
  * @author LatvianModder
@@ -222,8 +217,8 @@ public class Universe {
 	public final MinecraftServer server;
 	public WorldServer world;
 	public final Map<UUID, ForgePlayer> players;
-	private final Map<String, ForgeTeam> teams;
-	private final Short2ObjectOpenHashMap<ForgeTeam> teamMap;
+	public final Map<String, ForgeTeam> teams;
+	public final Short2ObjectOpenHashMap<ForgeTeam> teamMap;
 	private final ForgeTeam noneTeam;
 	private UUID uuid;
 	private boolean needsSaving;
@@ -314,44 +309,44 @@ public class Universe {
 
 		new UniverseLoadedEvent.Pre(this, data).post();
 
-		Map<UUID, NBTTagCompound> playerNBT = new HashMap<>();
-		Map<String, NBTTagCompound> teamNBT = new HashMap<>();
+//		Map<UUID, NBTTagCompound> playerNBT = new HashMap<>();
+//		Map<String, NBTTagCompound> teamNBT = new HashMap<>();
 
-		try {
-			MongoCursor<Document> players = getAllPlayers();
+//		try {
+//			MongoCursor<Document> players = getAllPlayers();
+//
+//			while (players.hasNext()) {
+//				NBTTagCompound nbt = fromDocument(players.next());
+//				String uuidString = nbt.getString("UUID");
+//				UUID uuid = StringUtils.fromString(uuidString);
+//				assert uuid != null;
+//
+//				playerNBT.put(uuid, nbt);
+//				ForgePlayer player = new ForgePlayer(this, uuid, nbt.getString("Name"));
+//
+//				this.players.put(uuid, player);
+//			}
+//		} catch (Exception ex) {
+//			ex.printStackTrace();
+//		}
 
-			while (players.hasNext()) {
-				NBTTagCompound nbt = fromDocument(players.next());
-				String uuidString = nbt.getString("UUID");
-				UUID uuid = StringUtils.fromString(uuidString);
-				assert uuid != null;
-
-				playerNBT.put(uuid, nbt);
-				ForgePlayer player = new ForgePlayer(this, uuid, nbt.getString("Name"));
-
-				this.players.put(uuid, player);
-			}
-		} catch (Exception ex) {
-			ex.printStackTrace();
-		}
-
-		try {
-			MongoCursor<Document> teams = getAllTeams();
-
-			while (teams.hasNext()) {
-				NBTTagCompound nbt = fromDocument(teams.next());
-				String s = nbt.getString("ID");
-
-				teamNBT.put(s, nbt);
-				short uid = nbt.getShort("UID");
-				ForgeTeam team = new ForgeTeam(this, generateTeamUID(uid), s, TeamType.NAME_MAP.get(nbt.getString("Type")));
-				addTeam(team);
-
-				if (uid == 0) team.markDirty();
-			}
-		} catch (Exception ex) {
-			ex.printStackTrace();
-		}
+//		try {
+//			MongoCursor<Document> teams = getAllTeams();
+//
+//			while (teams.hasNext()) {
+//				NBTTagCompound nbt = fromDocument(teams.next());
+//				String s = nbt.getString("ID");
+//
+//				teamNBT.put(s, nbt);
+//				short uid = nbt.getShort("UID");
+//				ForgeTeam team = new ForgeTeam(this, generateTeamUID(uid), s, TeamType.NAME_MAP.get(nbt.getString("Type")));
+//				addTeam(team);
+//
+//				if (uid == 0) team.markDirty();
+//			}
+//		} catch (Exception ex) {
+//			ex.printStackTrace();
+//		}
 
 		fakePlayerTeam = new ForgeTeam(this, (short) 1, "fakeplayer", TeamType.SERVER_NO_SAVE) {
 			@Override
@@ -366,30 +361,30 @@ public class Universe {
 
 		new UniverseLoadedEvent.CreateServerTeams(this).post();
 
-		for (ForgePlayer player : players.values()) {
-			NBTTagCompound nbt = playerNBT.get(player.getId());
-
-			if (nbt != null && !nbt.isEmpty()) {
-				player.team = getTeam(nbt.getString("TeamID"));
-				player.deserializeNBT(nbt);
-			}
-
-			new ForgePlayerLoadedEvent(player).post();
-		}
-
-		for (ForgeTeam team : getTeams()) {
-			if (!team.type.save) {
-				continue;
-			}
-
-			NBTTagCompound nbt = teamNBT.get(team.getId());
-
-			if (nbt != null && !nbt.isEmpty()) {
-				team.deserializeNBT(nbt);
-			}
-
-			new ForgeTeamLoadedEvent(team).post();
-		}
+//		for (ForgePlayer player : players.values()) {
+//			NBTTagCompound nbt = playerNBT.get(player.getId());
+//
+//			if (nbt != null && !nbt.isEmpty()) {
+//				player.team = getTeam(nbt.getString("TeamID"));
+//				player.deserializeNBT(nbt);
+//			}
+//
+//			new ForgePlayerLoadedEvent(player).post();
+//		}
+//
+//		for (ForgeTeam team : getTeams()) {
+//			if (!team.type.save) {
+//				continue;
+//			}
+//
+//			NBTTagCompound nbt = teamNBT.get(team.getId());
+//
+//			if (nbt != null && !nbt.isEmpty()) {
+//				team.deserializeNBT(nbt);
+//			}
+//
+//			new ForgeTeamLoadedEvent(team).post();
+//		}
 
 		if (universeData.hasKey("FakePlayer")) {
 			fakePlayer.deserializeNBT(universeData.getCompoundTag("FakePlayer"));
@@ -407,12 +402,12 @@ public class Universe {
 		FTBLibAPI.reloadServer(this, server, EnumReloadType.CREATED, ServerReloadEvent.ALL);
 	}
 
-	private void save() {
+	public void save() {
 		if (!checkSaving) {
 			return;
 		}
 
-		if (needsSaving) {
+		if (this.needsSaving) {
 			if (FTBLibConfig.debugging.print_more_info) {
 				FTBLib.LOGGER.info("Saving universe data");
 			}
@@ -438,50 +433,50 @@ public class Universe {
 			universeData.setTag("FakePlayer", fakePlayer.serializeNBT());
 			universeData.setTag("FakeTeam", fakePlayerTeam.serializeNBT());
 			NBTUtils.writeNBTSafe(new File(getWorldDirectory(), "data/ftb_lib/universe.dat"), universeData);
-			needsSaving = false;
+			this.needsSaving = false;
 		}
 
-		for (ForgePlayer player : players.values()) {
-			if (player.needsSaving) {
-				if (FTBLibConfig.debugging.print_more_info) {
-					FTBLib.LOGGER.info("Saved player data for " + player.getName());
-				}
-
-				ForgeTeam team = player.team;
-				String playerID = StringUtils.fromUUID(player.getId());
-
-				NBTTagCompound nbt = player.serializeNBT();
-				nbt.setString("Name", player.getName());
-				nbt.setString("UUID", playerID);
-				nbt.setString("TeamID", team.getId());
-
-				updatePlayer(team.getUID(), team.getId(), playerID, player.getName(), nbt);
-
-//				new ForgePlayerSavedEvent(player).post();
-				player.needsSaving = false;
-			}
-		}
-
-		for (ForgeTeam team : getTeams()) {
-			if (team.needsSaving) {
-				if (FTBLibConfig.debugging.print_more_info) {
-					FTBLib.LOGGER.info("Saved team data for " + team.getId());
-				}
-
-				if (team.type.save && team.isValid()) {
-					NBTTagCompound nbt = team.serializeNBT();
-					nbt.setString("ID", team.getId());
-					nbt.setShort("UID", team.getUID());
-					nbt.setString("Type", team.type.getName());
-
-					updateTeam(team.getUID(), team.getId(), nbt);
-
-//					new ForgeTeamSavedEvent(team).post();
-				}
-
-				team.needsSaving = false;
-			}
-		}
+//		for (ForgePlayer player : players.values()) {
+//			if (player.needsSaving) {
+//				if (FTBLibConfig.debugging.print_more_info) {
+//					FTBLib.LOGGER.info("Saved player data for " + player.getName());
+//				}
+//
+//				ForgeTeam team = player.team;
+//				String playerID = StringUtils.fromUUID(player.getId());
+//
+//				NBTTagCompound nbt = player.serializeNBT();
+//				nbt.setString("Name", player.getName());
+//				nbt.setString("UUID", playerID);
+//				nbt.setString("TeamID", team.getId());
+//
+//				updatePlayer(team.getUID(), team.getId(), playerID, player.getName(), nbt);
+//
+////				new ForgePlayerSavedEvent(player).post();
+//				player.needsSaving = false;
+//			}
+//		}
+//
+//		for (ForgeTeam team : getTeams()) {
+//			if (team.needsSaving) {
+//				if (FTBLibConfig.debugging.print_more_info) {
+//					FTBLib.LOGGER.info("Saved team data for " + team.getId());
+//				}
+//
+//				if (team.type.save && team.isValid()) {
+//					NBTTagCompound nbt = team.serializeNBT();
+//					nbt.setString("ID", team.getId());
+//					nbt.setShort("UID", team.getUID());
+//					nbt.setString("Type", team.type.getName());
+//
+//					updateTeam(team.getUID(), team.getId(), nbt);
+//
+////					new ForgeTeamSavedEvent(team).post();
+//				}
+//
+//				team.needsSaving = false;
+//			}
+//		}
 
 		checkSaving = false;
 	}
@@ -495,26 +490,32 @@ public class Universe {
 			return;
 		}
 
-		ForgePlayer p = getPlayer(player.getGameProfile());
+		UUID uuid = player.getUniqueID();
+		ForgePlayer forgePlayer = new ForgePlayer(this, player.getUniqueID(), player.getName());
+		NBTTagCompound forgePlayerData = getPlayerIfExists(player.getCachedUniqueIdString());
+		boolean notFirstLogin = forgePlayerData.hasKey("UUID");
 
-		if (p == null) {
-			p = new ForgePlayer(this, player.getUniqueID(), player.getName());
-			players.put(p.getId(), p);
-			p.onLoggedIn(player, this, true);
-		} else {
-			if (!p.getId().equals(player.getUniqueID()) || !p.getName().equals(player.getName())) {
-//				File old = p.getDataFile("");
-				players.remove(p.getId());
-				p.profile = new GameProfile(player.getUniqueID(), player.getName());
-				players.put(p.getId(), p);
-//				old.renameTo(p.getDataFile(""));
-				p.markDirty();
-				p.team.markDirty();
-				markDirty();
-			}
+		forgePlayer.profile = player.getGameProfile();
+		this.players.remove(uuid);
+		this.players.put(uuid, forgePlayer);
+		forgePlayer.markDirty();
 
-			p.onLoggedIn(player, this, false);
+		if (notFirstLogin) {
+			NBTTagCompound teamNBT = getTeamById(player.getName().toLowerCase());
+			String teamId = teamNBT.getString("ID");
+			short teamUid = teamNBT.getShort("UID");
+
+			ForgeTeam team = new ForgeTeam(this, generateTeamUID(teamUid), teamId, TeamType.PLAYER);
+			addTeam(team);
+
+			forgePlayer.team = team;
+			forgePlayer.deserializeNBT(forgePlayerData);
+			team.deserializeNBT(teamNBT);
+
+			new ForgeTeamLoadedEvent(team).post();
 		}
+
+		forgePlayer.onLoggedIn(player, this, !notFirstLogin);
 	}
 
 	public Collection<ForgePlayer> getPlayers() {
@@ -529,7 +530,22 @@ public class Universe {
 			return fakePlayer;
 		}
 
-		return players.get(id);
+		ForgePlayer player = players.get(id);
+
+//		if (player == null) {
+//			NBTTagCompound playerData = getPlayerIfExists(id.toString());
+//			if (playerData.hasKey("UUID")) {
+//				String uuidString = playerData.getString("UUID");
+//				UUID uuid = StringUtils.fromString(uuidString);
+//				assert uuid != null;
+//
+//				playerNBT.put(uuid, nbt);
+//				player = new ForgePlayer(this, uuid, nbt.getString("Name"));
+//
+//				this.players.put(uuid, player);
+//			}
+//		}
+		return player;
 	}
 
 	@Nullable
@@ -693,7 +709,7 @@ public class Universe {
 	}
 
 	public short generateTeamUID(short id) {
-		while (id == 0 || id == 1 || id == 2 || teamMap.containsKey(id)) {
+		while (id == 0 || id == 1 || id == 2) {
 			id = (short) MathUtils.RAND.nextInt();
 		}
 

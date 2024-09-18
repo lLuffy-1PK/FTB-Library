@@ -6,6 +6,7 @@ import net.minecraft.nbt.NBTTagCompound;
 import org.bson.Document;
 
 import static com.mongodb.client.model.Filters.eq;
+import static tech.funkyra.ftb.DBUtil.fromDocument;
 import static tech.funkyra.ftb.DBUtil.toDocument;
 import static tech.funkyra.ftb.Database.ftbDb;
 import static tech.funkyra.ftb.Database.queryOption;
@@ -25,5 +26,9 @@ public class TeamsCollection {
 
 	public static MongoCursor<Document> getAllTeams() {
 		return teamsCollection.find().iterator();
+	}
+
+	public static NBTTagCompound getTeamById(String id) {
+		return fromDocument(teamsCollection.find(eq("id", id)).first());
 	}
 }

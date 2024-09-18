@@ -476,7 +476,7 @@ public class ForgeTeam extends FinalIDObject implements INBTSerializable<NBTTagC
     }
 
     public void delete() {
-        universe.removeTeam(this);
+//        universe.removeTeam(this);
     }
 
     public List<ForgePlayer> getMembers() {

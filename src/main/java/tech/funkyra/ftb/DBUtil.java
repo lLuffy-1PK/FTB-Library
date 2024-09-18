@@ -6,7 +6,6 @@ import org.bson.Document;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
-import java.io.IOException;
 import java.util.Base64;
 
 public class DBUtil {
@@ -16,7 +15,7 @@ public class DBUtil {
 			CompressedStreamTools.writeCompressed(nbt, byteArrayOutputStream);
 
 			return Base64.getEncoder().encodeToString(byteArrayOutputStream.toByteArray());
-		} catch (IOException e) {
+		} catch (Exception e) {
 			e.printStackTrace();
 			return "";
 		}
@@ -24,11 +23,15 @@ public class DBUtil {
 
 	public static NBTTagCompound fromDocument(Document document) {
 		try {
-			byte[] data = Base64.getDecoder().decode(document.getString("nbt"));
+			String playerNBT = document.getString("player");
+
+			assert playerNBT != null;
+
+			byte[] data = Base64.getDecoder().decode(playerNBT);
 			ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(data);
 
 			return CompressedStreamTools.readCompressed(byteArrayInputStream);
-		} catch (IOException e) {
+		} catch (Exception e) {
 			e.printStackTrace();
 			return new NBTTagCompound();
 		}
