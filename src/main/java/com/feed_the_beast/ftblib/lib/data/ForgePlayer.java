@@ -221,39 +221,9 @@ public class ForgePlayer implements INBTSerializable<NBTTagCompound>, Comparable
 
 		boolean sendTeamJoinEvent = false, sendTeamCreatedEvent = false;
 
-		if (firstLogin && (FTBLibConfig.teams.disable_teams || (player.server.isSinglePlayer() ? FTBLibConfig.teams.autocreate_sp : FTBLibConfig.teams.autocreate_mp))) {
-			if (player.server.isSinglePlayer()) {
-				team = universe.getTeam("singleplayer");
-
-				if (!team.isValid()) {
-					team = new ForgeTeam(universe, (short) 2, "singleplayer", TeamType.SERVER);
-					team.setFreeToJoin(true);
-					universe.addTeam(team);
-					team.setTitle(getName());
-					team.setIcon(new PlayerHeadIcon(getId()).toString());
-					team.setColor(EnumTeamColor.NAME_MAP.getRandom(universe.world.rand));
-					team.markDirty();
-					sendTeamCreatedEvent = true;
-				}
-
-				sendTeamJoinEvent = true;
-			} else {
-				String id = getName().toLowerCase();
-
-				if (universe.getTeam(id).isValid()) {
-					id = StringUtils.fromUUID(getId());
-				}
-
-				if (!universe.getTeam(id).isValid()) {
-					team = new ForgeTeam(universe, universe.generateTeamUID((short) 0), id, TeamType.PLAYER);
-					team.owner = this;
-					universe.addTeam(team);
-					team.setColor(EnumTeamColor.NAME_MAP.getRandom(universe.world.rand));
-					team.markDirty();
-					sendTeamCreatedEvent = true;
-					sendTeamJoinEvent = true;
-				}
-			}
+		if (firstLogin) {
+			sendTeamCreatedEvent = true;
+			sendTeamJoinEvent = true;
 		}
 
 		if (!isFake()) {

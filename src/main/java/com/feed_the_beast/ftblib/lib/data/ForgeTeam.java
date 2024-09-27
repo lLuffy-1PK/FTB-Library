@@ -126,8 +126,6 @@ public class ForgeTeam extends FinalIDObject implements INBTSerializable<NBTTagC
 
     @Override
     public void deserializeNBT(NBTTagCompound nbt) {
-        owner = universe.getPlayer(nbt.getString("Owner"));
-
         if (!isValid()) {
             return;
         }

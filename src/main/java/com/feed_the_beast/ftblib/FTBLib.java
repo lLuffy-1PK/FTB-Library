@@ -90,7 +90,7 @@ public class FTBLib {
     @Mod.EventHandler
     public void onServerStarting(FMLServerStartingEvent event) {
         event.registerServerCommand(new CmdReload());
-        event.registerServerCommand(new CmdMySettings());
+//        event.registerServerCommand(new CmdMySettings());
         event.registerServerCommand(new CmdTeam());
 
         if (FTBLibConfig.debugging.special_commands) {

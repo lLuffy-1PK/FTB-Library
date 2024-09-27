@@ -24,7 +24,7 @@ import java.util.List;
  */
 public class CmdJoin extends CmdBase {
     public CmdJoin() {
-        super("join", Level.ALL);
+        super("join", Level.STRONG_OP);
     }
 
     @Override

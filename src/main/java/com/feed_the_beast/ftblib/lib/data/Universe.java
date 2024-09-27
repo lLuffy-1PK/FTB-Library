@@ -493,29 +493,37 @@ public class Universe {
 		UUID uuid = player.getUniqueID();
 		ForgePlayer forgePlayer = new ForgePlayer(this, player.getUniqueID(), player.getName());
 		NBTTagCompound forgePlayerData = getPlayerIfExists(player.getCachedUniqueIdString());
-		boolean notFirstLogin = forgePlayerData.hasKey("UUID");
+		boolean firstLogin = !forgePlayerData.hasKey("UUID");
 
 		forgePlayer.profile = player.getGameProfile();
 		this.players.remove(uuid);
 		this.players.put(uuid, forgePlayer);
 		forgePlayer.markDirty();
 
-		if (notFirstLogin) {
-			NBTTagCompound teamNBT = getTeamById(player.getName().toLowerCase());
-			String teamId = teamNBT.getString("ID");
-			short teamUid = teamNBT.getShort("UID");
+		String playerLowerNick = player.getName().toLowerCase();
+		NBTTagCompound teamNBT = getTeamById(playerLowerNick);
+		String teamId = teamNBT.getString("ID");
+		short teamUid = teamNBT.getShort("UID");
+		ForgeTeam team;
 
-			ForgeTeam team = new ForgeTeam(this, generateTeamUID(teamUid), teamId, TeamType.PLAYER);
-			addTeam(team);
+		if (teamId.isEmpty())
+			team = new ForgeTeam(this, generateTeamUID(teamUid), playerLowerNick, TeamType.PLAYER);
+		else
+			team = new ForgeTeam(this, generateTeamUID(teamUid), teamId, TeamType.PLAYER);
 
-			forgePlayer.team = team;
-			forgePlayer.deserializeNBT(forgePlayerData);
-			team.deserializeNBT(teamNBT);
+		team.owner = forgePlayer;
+		team.setColor(EnumTeamColor.NAME_MAP.getRandom(world.rand));
+		team.markDirty();
 
-			new ForgeTeamLoadedEvent(team).post();
-		}
+		addTeam(team);
 
-		forgePlayer.onLoggedIn(player, this, !notFirstLogin);
+		forgePlayer.team = team;
+		forgePlayer.deserializeNBT(forgePlayerData);
+		team.deserializeNBT(teamNBT);
+
+		new ForgeTeamLoadedEvent(team).post();
+
+		forgePlayer.onLoggedIn(player, this, firstLogin);
 	}
 
 	public Collection<ForgePlayer> getPlayers() {
@@ -530,22 +538,7 @@ public class Universe {
 			return fakePlayer;
 		}
 
-		ForgePlayer player = players.get(id);
-
-//		if (player == null) {
-//			NBTTagCompound playerData = getPlayerIfExists(id.toString());
-//			if (playerData.hasKey("UUID")) {
-//				String uuidString = playerData.getString("UUID");
-//				UUID uuid = StringUtils.fromString(uuidString);
-//				assert uuid != null;
-//
-//				playerNBT.put(uuid, nbt);
-//				player = new ForgePlayer(this, uuid, nbt.getString("Name"));
-//
-//				this.players.put(uuid, player);
-//			}
-//		}
-		return player;
+		return players.get(id);
 	}
 
 	@Nullable
@@ -694,6 +687,9 @@ public class Universe {
 	}
 
 	public void addTeam(ForgeTeam team) {
+		teamMap.remove(team.getUID());
+		teams.remove(team.getId());
+
 		teamMap.put(team.getUID(), team);
 		teams.put(team.getId(), team);
 	}
