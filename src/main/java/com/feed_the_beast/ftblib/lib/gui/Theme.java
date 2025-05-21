@@ -34,6 +34,9 @@ public class Theme {
     private static final Color4I CONTENT_COLOR_MOUSE_OVER = Color4I.rgb(16777120);
     private static final Color4I CONTENT_COLOR_DISABLED = Color4I.rgb(10526880);
     private static final Color4I CONTENT_COLOR_DARK = Color4I.rgb(4210752);
+    private static final Color4I COLOR_LINK_HOVER = Color4I.LIGHT_GREEN;
+    private static final Color4I COLOR_LINK = Color4I.LIGHT_BLUE;
+
 
     public static final ImageIcon BACKGROUND_SQUARES = (ImageIcon) Icon.getIcon(FTBLib.MOD_ID + ":textures/gui/background_squares.png");
     private static final ImageIcon TEXTURE_BEACON = (ImageIcon) Icon.getIcon("textures/gui/container/beacon.png");
@@ -64,6 +67,14 @@ public class Theme {
     private static final Icon TAB_H_SELECTED = TEXTURE_RECIPE_BOOK.withUV(188, 2, 35, 26, 256, 256);
 
     private final BooleanStack fontUnicode = new BooleanArrayList();
+
+    public Color4I getColorLink() {
+        return COLOR_LINK;
+    }
+
+    public Color4I getColorLinkHover() {
+        return COLOR_LINK_HOVER;
+    }
 
     public Color4I getContentColor(WidgetType type) {
         return type == WidgetType.MOUSE_OVER ? CONTENT_COLOR_MOUSE_OVER : type == WidgetType.DISABLED ? CONTENT_COLOR_DISABLED : Color4I.WHITE;
