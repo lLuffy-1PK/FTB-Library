@@ -15,32 +15,27 @@ import java.util.Collections;
 /**
  * @author LatvianModder
  */
-public class JEIGlobalGuiHandler implements IGlobalGuiHandler
-{
-	@Override
-	public Collection<Rectangle> getGuiExtraAreas()
-	{
-		GuiScreen currentScreen = Minecraft.getMinecraft().currentScreen;
+public class JEIGlobalGuiHandler implements IGlobalGuiHandler {
+    @Override
+    public Collection<Rectangle> getGuiExtraAreas() {
+        GuiScreen currentScreen = Minecraft.getMinecraft().currentScreen;
 
-		if (FTBLibClientEventHandler.areButtonsVisible(currentScreen))
-		{
-			return Collections.singleton(FTBLibClientEventHandler.lastDrawnArea);
-		}
+        if (FTBLibClientEventHandler.areButtonsVisible(currentScreen)) {
+            return Collections.singleton(FTBLibClientEventHandler.lastDrawnArea);
+        }
 
-		return Collections.emptySet();
-	}
+        return Collections.emptySet();
+    }
 
-	@Override
-	@Nullable
-	public Object getIngredientUnderMouse(int mouseX, int mouseY)
-	{
-		GuiScreen currentScreen = Minecraft.getMinecraft().currentScreen;
+    @Override
+    @Nullable
+    public Object getIngredientUnderMouse(int mouseX, int mouseY) {
+        GuiScreen currentScreen = Minecraft.getMinecraft().currentScreen;
 
-		if (currentScreen instanceof IGuiWrapper)
-		{
-			return WrappedIngredient.unwrap(((IGuiWrapper) currentScreen).getGui().getIngredientUnderMouse());
-		}
+        if (currentScreen instanceof IGuiWrapper) {
+            return WrappedIngredient.unwrap(((IGuiWrapper) currentScreen).getGui().getIngredientUnderMouse());
+        }
 
-		return null;
-	}
+        return null;
+    }
 }

@@ -17,33 +17,28 @@ import java.util.List;
 /**
  * @author LatvianModder
  */
-public class CmdGet extends CmdBase
-{
-	public CmdGet()
-	{
-		super("get", Level.ALL);
-	}
+public class CmdGet extends CmdBase {
+    public CmdGet() {
+        super("get", Level.ALL);
+    }
 
-	@Override
-	public List<String> getTabCompletions(MinecraftServer server, ICommandSender sender, String[] args, @Nullable BlockPos pos)
-	{
-		if (args.length == 1)
-		{
-			return getListOfStringsMatchingLastWord(args, Universe.get().getPlayers());
-		}
+    @Override
+    public List<String> getTabCompletions(MinecraftServer server, ICommandSender sender, String[] args, @Nullable BlockPos pos) {
+        if (args.length == 1) {
+            return getListOfStringsMatchingLastWord(args, Universe.get().getPlayers());
+        }
 
-		return super.getTabCompletions(server, sender, args, pos);
-	}
+        return super.getTabCompletions(server, sender, args, pos);
+    }
 
-	@Override
-	public void execute(MinecraftServer server, ICommandSender sender, String[] args) throws CommandException
-	{
-		checkArgs(sender, args, 1);
-		ForgePlayer player = CommandUtils.getSelfOrOther(sender, args, 0);
-		ITextComponent component = new TextComponentString("");
-		component.appendSibling(player.getDisplayName());
-		component.appendText(": ");
-		component.appendSibling(player.team.getCommandTitle());
-		sender.sendMessage(component);
-	}
+    @Override
+    public void execute(MinecraftServer server, ICommandSender sender, String[] args) throws CommandException {
+        checkArgs(sender, args, 1);
+        ForgePlayer player = CommandUtils.getSelfOrOther(sender, args, 0);
+        ITextComponent component = new TextComponentString("");
+        component.appendSibling(player.getDisplayName());
+        component.appendText(": ");
+        component.appendSibling(player.team.getCommandTitle());
+        sender.sendMessage(component);
+    }
 }

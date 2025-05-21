@@ -9,16 +9,13 @@ import net.minecraft.server.MinecraftServer;
 /**
  * @author LatvianModder
  */
-public class CommandClientConfig extends CmdBase
-{
-	public CommandClientConfig()
-	{
-		super("client_config", Level.ALL);
-	}
+public class CommandClientConfig extends CmdBase {
+    public CommandClientConfig() {
+        super("client_config", Level.ALL);
+    }
 
-	@Override
-	public void execute(MinecraftServer server, ICommandSender sender, String[] args) throws CommandException
-	{
-		new GuiClientConfig().openGuiLater();
-	}
+    @Override
+    public void execute(MinecraftServer server, ICommandSender sender, String[] args) throws CommandException {
+        new GuiClientConfig().openGuiLater();
+    }
 }

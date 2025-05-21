@@ -18,66 +18,53 @@ import java.util.Collection;
 /**
  * @author LatvianModder
  */
-public class MessageSelectTeamGui extends MessageToClient
-{
-	private Collection<PublicTeamData> teams;
-	private boolean canCreate;
+public class MessageSelectTeamGui extends MessageToClient {
+    private Collection<PublicTeamData> teams;
+    private boolean canCreate;
 
-	public MessageSelectTeamGui()
-	{
-	}
+    public MessageSelectTeamGui() {
+    }
 
-	public MessageSelectTeamGui(ForgePlayer player, boolean c)
-	{
-		teams = new ArrayList<>();
+    public MessageSelectTeamGui(ForgePlayer player, boolean c) {
+        teams = new ArrayList<>();
 
-		for (ForgeTeam team : Universe.get().getTeams())
-		{
-			PublicTeamData.Type type = PublicTeamData.Type.NEEDS_INVITE;
+        for (ForgeTeam team : Universe.get().getTeams()) {
+            PublicTeamData.Type type = PublicTeamData.Type.NEEDS_INVITE;
 
-			if (team.isEnemy(player))
-			{
-				type = PublicTeamData.Type.ENEMY;
-			}
-			else if (team.isInvited(player))
-			{
-				type = PublicTeamData.Type.CAN_JOIN;
-			}
-			else if (team.isRequestingInvite(player))
-			{
-				type = PublicTeamData.Type.REQUESTING_INVITE;
-			}
+            if (team.isEnemy(player)) {
+                type = PublicTeamData.Type.ENEMY;
+            } else if (team.isInvited(player)) {
+                type = PublicTeamData.Type.CAN_JOIN;
+            } else if (team.isRequestingInvite(player)) {
+                type = PublicTeamData.Type.REQUESTING_INVITE;
+            }
 
-			teams.add(new PublicTeamData(team, type));
-		}
+            teams.add(new PublicTeamData(team, type));
+        }
 
-		canCreate = c;
-	}
+        canCreate = c;
+    }
 
-	@Override
-	public NetworkWrapper getWrapper()
-	{
-		return FTBLibNetHandler.MY_TEAM;
-	}
+    @Override
+    public NetworkWrapper getWrapper() {
+        return FTBLibNetHandler.MY_TEAM;
+    }
 
-	@Override
-	public void writeData(DataOut data)
-	{
-		data.writeCollection(teams, PublicTeamData.SERIALIZER);
-		data.writeBoolean(canCreate);
-	}
+    @Override
+    public void writeData(DataOut data) {
+        data.writeCollection(teams, PublicTeamData.SERIALIZER);
+        data.writeBoolean(canCreate);
+    }
 
-	@Override
-	public void readData(DataIn data)
-	{
-		teams = data.readCollection(null, PublicTeamData.DESERIALIZER);
-		canCreate = data.readBoolean();
-	}
+    @Override
+    public void readData(DataIn data) {
+        teams = data.readCollection(null, PublicTeamData.DESERIALIZER);
+        canCreate = data.readBoolean();
+    }
 
-	@Override
-	@SideOnly(Side.CLIENT)
-	public void onMessage()
-	{
-		new GuiSelectTeam(teams, canCreate).openGui();
-	}
+    @Override
+    @SideOnly(Side.CLIENT)
+    public void onMessage() {
+        new GuiSelectTeam(teams, canCreate).openGui();
+    }
 }

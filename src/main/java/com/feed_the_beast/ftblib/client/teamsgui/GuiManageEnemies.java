@@ -18,52 +18,42 @@ import java.util.List;
 /**
  * @author LatvianModder
  */
-public class GuiManageEnemies extends GuiManagePlayersBase
-{
-	private static class ButtonPlayer extends ButtonPlayerBase
-	{
-		private ButtonPlayer(Panel panel, MessageMyTeamPlayerList.Entry m)
-		{
-			super(panel, m);
-		}
+public class GuiManageEnemies extends GuiManagePlayersBase {
+    private static class ButtonPlayer extends ButtonPlayerBase {
+        private ButtonPlayer(Panel panel, MessageMyTeamPlayerList.Entry m) {
+            super(panel, m);
+        }
 
-		@Override
-		Color4I getPlayerColor()
-		{
-			return entry.status == EnumTeamStatus.ENEMY ? Color4I.getChatFormattingColor(TextFormatting.RED) : getDefaultPlayerColor();
-		}
+        @Override
+        Color4I getPlayerColor() {
+            return entry.status == EnumTeamStatus.ENEMY ? Color4I.getChatFormattingColor(TextFormatting.RED) : getDefaultPlayerColor();
+        }
 
-		@Override
-		public void addMouseOverText(List<String> list)
-		{
-			list.add(I18n.format((entry.status == EnumTeamStatus.ENEMY ? EnumTeamStatus.ENEMY : EnumTeamStatus.NONE).getLangKey()));
-		}
+        @Override
+        public void addMouseOverText(List<String> list) {
+            list.add(I18n.format((entry.status == EnumTeamStatus.ENEMY ? EnumTeamStatus.ENEMY : EnumTeamStatus.NONE).getLangKey()));
+        }
 
-		@Override
-		public void onClicked(MouseButton button)
-		{
-			GuiHelper.playClickSound();
-			NBTTagCompound data = new NBTTagCompound();
-			data.setString("player", entry.name);
+        @Override
+        public void onClicked(MouseButton button) {
+            GuiHelper.playClickSound();
+            NBTTagCompound data = new NBTTagCompound();
+            data.setString("player", entry.name);
 
-			if (entry.status == EnumTeamStatus.ENEMY)
-			{
-				data.setBoolean("add", false);
-				entry.status = EnumTeamStatus.NONE;
-			}
-			else
-			{
-				data.setBoolean("add", true);
-				entry.status = EnumTeamStatus.ENEMY;
-			}
+            if (entry.status == EnumTeamStatus.ENEMY) {
+                data.setBoolean("add", false);
+                entry.status = EnumTeamStatus.NONE;
+            } else {
+                data.setBoolean("add", true);
+                entry.status = EnumTeamStatus.ENEMY;
+            }
 
-			new MessageMyTeamAction(FTBLibTeamGuiActions.ENEMIES.getId(), data).sendToServer();
-			updateIcon();
-		}
-	}
+            new MessageMyTeamAction(FTBLibTeamGuiActions.ENEMIES.getId(), data).sendToServer();
+            updateIcon();
+        }
+    }
 
-	public GuiManageEnemies(Collection<MessageMyTeamPlayerList.Entry> m)
-	{
-		super(I18n.format("team_action.ftblib.enemies"), m, ButtonPlayer::new);
-	}
+    public GuiManageEnemies(Collection<MessageMyTeamPlayerList.Entry> m) {
+        super(I18n.format("team_action.ftblib.enemies"), m, ButtonPlayer::new);
+    }
 }

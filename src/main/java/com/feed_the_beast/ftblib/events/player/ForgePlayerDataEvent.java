@@ -8,18 +8,15 @@ import java.util.function.Consumer;
 /**
  * @author LatvianModder
  */
-public class ForgePlayerDataEvent extends ForgePlayerEvent
-{
-	private final Consumer<NBTDataStorage.Data> callback;
+public class ForgePlayerDataEvent extends ForgePlayerEvent {
+    private final Consumer<NBTDataStorage.Data> callback;
 
-	public ForgePlayerDataEvent(ForgePlayer player, Consumer<NBTDataStorage.Data> c)
-	{
-		super(player);
-		callback = c;
-	}
+    public ForgePlayerDataEvent(ForgePlayer player, Consumer<NBTDataStorage.Data> c) {
+        super(player);
+        callback = c;
+    }
 
-	public void register(NBTDataStorage.Data data)
-	{
-		callback.accept(data);
-	}
+    public void register(NBTDataStorage.Data data) {
+        callback.accept(data);
+    }
 }

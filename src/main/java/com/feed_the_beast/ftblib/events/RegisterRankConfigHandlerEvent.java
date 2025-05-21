@@ -7,17 +7,14 @@ import java.util.function.Consumer;
 /**
  * @author LatvianModder
  */
-public class RegisterRankConfigHandlerEvent extends FTBLibEvent
-{
-	private final Consumer<IRankConfigHandler> callback;
+public class RegisterRankConfigHandlerEvent extends FTBLibEvent {
+    private final Consumer<IRankConfigHandler> callback;
 
-	public RegisterRankConfigHandlerEvent(Consumer<IRankConfigHandler> c)
-	{
-		callback = c;
-	}
+    public RegisterRankConfigHandlerEvent(Consumer<IRankConfigHandler> c) {
+        callback = c;
+    }
 
-	public void setHandler(IRankConfigHandler handler)
-	{
-		callback.accept(handler);
-	}
+    public void setHandler(IRankConfigHandler handler) {
+        callback.accept(handler);
+    }
 }

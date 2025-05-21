@@ -37,6 +37,7 @@ public class Theme {
     private static final Color4I COLOR_LINK_HOVER = Color4I.LIGHT_GREEN;
     private static final Color4I COLOR_LINK = Color4I.LIGHT_BLUE;
 
+
     public static final ImageIcon BACKGROUND_SQUARES = (ImageIcon) Icon.getIcon(FTBLib.MOD_ID + ":textures/gui/background_squares.png");
     private static final ImageIcon TEXTURE_BEACON = (ImageIcon) Icon.getIcon("textures/gui/container/beacon.png");
     private static final ImageIcon TEXTURE_WIDGETS = (ImageIcon) Icon.getIcon("textures/gui/widgets.png");

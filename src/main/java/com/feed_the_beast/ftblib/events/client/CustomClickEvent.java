@@ -8,17 +8,14 @@ import net.minecraftforge.fml.common.eventhandler.Cancelable;
  * @author LatvianModder
  */
 @Cancelable
-public class CustomClickEvent extends FTBLibEvent
-{
-	private final ResourceLocation id;
+public class CustomClickEvent extends FTBLibEvent {
+    private final ResourceLocation id;
 
-	public CustomClickEvent(ResourceLocation _id)
-	{
-		id = _id;
-	}
+    public CustomClickEvent(ResourceLocation _id) {
+        id = _id;
+    }
 
-	public ResourceLocation getID()
-	{
-		return id;
-	}
+    public ResourceLocation getID() {
+        return id;
+    }
 }

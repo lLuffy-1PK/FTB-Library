@@ -18,164 +18,133 @@ import java.util.List;
 /**
  * @author LatvianModder
  */
-public class ConfigNBT extends ConfigValue
-{
-	public static final String ID = "nbt";
+public class ConfigNBT extends ConfigValue {
+    public static final String ID = "nbt";
 
-	private NBTTagCompound value;
+    private NBTTagCompound value;
 
-	public ConfigNBT(@Nullable NBTTagCompound nbt)
-	{
-		value = nbt;
-	}
+    public ConfigNBT(@Nullable NBTTagCompound nbt) {
+        value = nbt;
+    }
 
-	@Override
-	public String getId()
-	{
-		return ID;
-	}
+    @Override
+    public String getId() {
+        return ID;
+    }
 
-	@Override
-	public String getString()
-	{
-		return value == null ? "null" : value.toString();
-	}
+    @Override
+    public String getString() {
+        return value == null ? "null" : value.toString();
+    }
 
-	@Nullable
-	public NBTTagCompound getNBT()
-	{
-		return value;
-	}
+    @Nullable
+    public NBTTagCompound getNBT() {
+        return value;
+    }
 
-	public void setNBT(@Nullable NBTTagCompound nbt)
-	{
-		value = nbt;
-	}
+    public void setNBT(@Nullable NBTTagCompound nbt) {
+        value = nbt;
+    }
 
-	@Override
-	public boolean getBoolean()
-	{
-		value = getNBT();
-		return value != null && !value.isEmpty();
-	}
+    @Override
+    public boolean getBoolean() {
+        value = getNBT();
+        return value != null && !value.isEmpty();
+    }
 
-	@Override
-	public int getInt()
-	{
-		value = getNBT();
-		return value == null ? 0 : value.getSize();
-	}
+    @Override
+    public int getInt() {
+        value = getNBT();
+        return value == null ? 0 : value.getSize();
+    }
 
-	@Override
-	public ConfigNBT copy()
-	{
-		value = getNBT();
-		return new ConfigNBT(value == null ? null : value.copy());
-	}
+    @Override
+    public ConfigNBT copy() {
+        value = getNBT();
+        return new ConfigNBT(value == null ? null : value.copy());
+    }
 
-	@Override
-	public ITextComponent getStringForGUI()
-	{
-		return new TextComponentString(getNBT() == null ? "null" : "{...}");
-	}
+    @Override
+    public ITextComponent getStringForGUI() {
+        return new TextComponentString(getNBT() == null ? "null" : "{...}");
+    }
 
-	@Override
-	public boolean setValueFromString(@Nullable ICommandSender sender, String string, boolean simulate)
-	{
-		if (string.equals("null"))
-		{
-			if (!simulate)
-			{
-				setNBT(null);
-			}
+    @Override
+    public boolean setValueFromString(@Nullable ICommandSender sender, String string, boolean simulate) {
+        if (string.equals("null")) {
+            if (!simulate) {
+                setNBT(null);
+            }
 
-			return true;
-		}
+            return true;
+        }
 
-		try
-		{
-			value = JsonToNBT.getTagFromJson(string);
+        try {
+            value = JsonToNBT.getTagFromJson(string);
 
-			if (!simulate)
-			{
-				setNBT(value);
-			}
+            if (!simulate) {
+                setNBT(value);
+            }
 
-			return true;
-		}
-		catch (Exception ex)
-		{
-			return false;
-		}
-	}
+            return true;
+        } catch (Exception ex) {
+            return false;
+        }
+    }
 
-	@Override
-	public void addInfo(ConfigValueInstance inst, List<String> list)
-	{
-		list.add(TextFormatting.AQUA + "Value: " + TextFormatting.RESET + NBTUtils.getColoredNBTString(getNBT()));
+    @Override
+    public void addInfo(ConfigValueInstance inst, List<String> list) {
+        list.add(TextFormatting.AQUA + "Value: " + TextFormatting.RESET + NBTUtils.getColoredNBTString(getNBT()));
 
-		if (inst.getCanEdit() && inst.getDefaultValue() instanceof ConfigNBT)
-		{
-			list.add(TextFormatting.AQUA + "Default: " + TextFormatting.RESET + NBTUtils.getColoredNBTString(((ConfigNBT) inst.getDefaultValue()).getNBT()));
-		}
-	}
+        if (inst.getCanEdit() && inst.getDefaultValue() instanceof ConfigNBT) {
+            list.add(TextFormatting.AQUA + "Default: " + TextFormatting.RESET + NBTUtils.getColoredNBTString(((ConfigNBT) inst.getDefaultValue()).getNBT()));
+        }
+    }
 
-	@Override
-	public void writeToNBT(NBTTagCompound nbt, String key)
-	{
-		value = getNBT();
+    @Override
+    public void writeToNBT(NBTTagCompound nbt, String key) {
+        value = getNBT();
 
-		if (value != null)
-		{
-			nbt.setTag(key, value);
-		}
-	}
+        if (value != null) {
+            nbt.setTag(key, value);
+        }
+    }
 
-	@Override
-	public void readFromNBT(NBTTagCompound nbt, String key)
-	{
-		value = nbt.hasKey(key) ? nbt.getCompoundTag(key) : null;
-	}
+    @Override
+    public void readFromNBT(NBTTagCompound nbt, String key) {
+        value = nbt.hasKey(key) ? nbt.getCompoundTag(key) : null;
+    }
 
-	@Override
-	public void writeData(DataOut data)
-	{
-		data.writeNBT(getNBT());
-	}
+    @Override
+    public void writeData(DataOut data) {
+        data.writeNBT(getNBT());
+    }
 
-	@Override
-	public void readData(DataIn data)
-	{
-		setNBT(data.readNBT());
-	}
+    @Override
+    public void readData(DataIn data) {
+        setNBT(data.readNBT());
+    }
 
-	@Override
-	public boolean isEmpty()
-	{
-		value = getNBT();
-		return value == null || value.isEmpty();
-	}
+    @Override
+    public boolean isEmpty() {
+        value = getNBT();
+        return value == null || value.isEmpty();
+    }
 
-	@Override
-	public void setValueFromOtherValue(ConfigValue value)
-	{
-		if (value instanceof ConfigNBT)
-		{
-			NBTTagCompound nbt = ((ConfigNBT) value).getNBT();
-			setNBT(nbt == null ? null : nbt.copy());
-		}
-		else
-		{
-			super.setValueFromOtherValue(value);
-		}
-	}
+    @Override
+    public void setValueFromOtherValue(ConfigValue value) {
+        if (value instanceof ConfigNBT) {
+            NBTTagCompound nbt = ((ConfigNBT) value).getNBT();
+            setNBT(nbt == null ? null : nbt.copy());
+        } else {
+            super.setValueFromOtherValue(value);
+        }
+    }
 
-	@Override
-	public void setValueFromJson(JsonElement json)
-	{
-		if (json.isJsonObject())
-		{
-			setNBT((NBTTagCompound) JsonUtils.toNBT(json));
-		}
-	}
+    @Override
+    public void setValueFromJson(JsonElement json) {
+        if (json.isJsonObject()) {
+            setNBT((NBTTagCompound) JsonUtils.toNBT(json));
+        }
+    }
 }

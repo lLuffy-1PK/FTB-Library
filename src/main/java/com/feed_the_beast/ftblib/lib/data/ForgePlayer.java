@@ -2,11 +2,7 @@ package com.feed_the_beast.ftblib.lib.data;
 
 import com.feed_the_beast.ftblib.FTBLib;
 import com.feed_the_beast.ftblib.FTBLibConfig;
-import com.feed_the_beast.ftblib.events.player.ForgePlayerConfigEvent;
-import com.feed_the_beast.ftblib.events.player.ForgePlayerConfigSavedEvent;
-import com.feed_the_beast.ftblib.events.player.ForgePlayerDataEvent;
-import com.feed_the_beast.ftblib.events.player.ForgePlayerLoggedInEvent;
-import com.feed_the_beast.ftblib.events.player.ForgePlayerLoggedOutEvent;
+import com.feed_the_beast.ftblib.events.player.*;
 import com.feed_the_beast.ftblib.events.team.ForgeTeamCreatedEvent;
 import com.feed_the_beast.ftblib.events.team.ForgeTeamPlayerJoinedEvent;
 import com.feed_the_beast.ftblib.lib.EnumTeamColor;
@@ -23,7 +19,6 @@ import com.mojang.authlib.GameProfile;
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.nbt.CompressedStreamTools;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.stats.StatisticsManagerServer;
 import net.minecraft.util.text.ITextComponent;
@@ -40,17 +35,15 @@ import net.minecraftforge.server.permission.context.PlayerContext;
 import net.minecraftforge.server.permission.context.WorldContext;
 
 import javax.annotation.Nullable;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.InputStream;
 import java.util.UUID;
+
+import static tech.funkyra.ftb.collections.PlayersCollection.getPlayerIfExists;
+import static tech.funkyra.ftb.collections.PlayersCollection.updatePlayer;
 
 /**
  * @author LatvianModder
  */
-public class ForgePlayer implements INBTSerializable<NBTTagCompound>, Comparable<ForgePlayer>, IConfigCallback
-{
+public class ForgePlayer implements INBTSerializable<NBTTagCompound>, Comparable<ForgePlayer>, IConfigCallback {
 	private static FakePlayer playerForStats;
 
 	public GameProfile profile;
@@ -63,8 +56,7 @@ public class ForgePlayer implements INBTSerializable<NBTTagCompound>, Comparable
 	public boolean needsSaving;
 	public EntityPlayerMP tempPlayer;
 
-	public ForgePlayer(Universe u, GameProfile p)
-	{
+	public ForgePlayer(Universe u, GameProfile p) {
 		profile = p;
 		dataStorage = new NBTDataStorage();
 		team = u.getTeam("");
@@ -73,14 +65,12 @@ public class ForgePlayer implements INBTSerializable<NBTTagCompound>, Comparable
 		needsSaving = false;
 	}
 
-	public ForgePlayer(Universe u, UUID id, String name)
-	{
+	public ForgePlayer(Universe u, UUID id, String name) {
 		this(u, new GameProfile(id, name));
 	}
 
 	@Override
-	public NBTTagCompound serializeNBT()
-	{
+	public NBTTagCompound serializeNBT() {
 		NBTTagCompound nbt = new NBTTagCompound();
 		nbt.setBoolean("HideTeamNotification", hideTeamNotification);
 		nbt.setLong("LastTimeSeen", lastTimeSeen);
@@ -89,234 +79,154 @@ public class ForgePlayer implements INBTSerializable<NBTTagCompound>, Comparable
 	}
 
 	@Override
-	public void deserializeNBT(NBTTagCompound nbt)
-	{
+	public void deserializeNBT(NBTTagCompound nbt) {
 		hideTeamNotification = nbt.getBoolean("HideTeamNotification");
 		lastTimeSeen = nbt.getLong("LastTimeSeen");
 		dataStorage.deserializeNBT(nbt.getCompoundTag("Data"));
 	}
 
-	public void clearCache()
-	{
+	public void clearCache() {
 		cachedPlayerNBT = null;
 		cachedConfig = null;
 		dataStorage.clearCache();
 	}
 
-	public void markDirty()
-	{
+	public void markDirty() {
 		needsSaving = true;
 		team.universe.checkSaving = true;
 	}
 
-	public boolean hasTeam()
-	{
+	public boolean hasTeam() {
 		return team.isValid();
 	}
 
-	public GameProfile getProfile()
-	{
+	public GameProfile getProfile() {
 		return profile;
 	}
 
-	public final UUID getId()
-	{
+	public final UUID getId() {
 		return profile.getId();
 	}
 
-	public final String getName()
-	{
+	public final String getName() {
 		return profile.getName();
 	}
 
-	public final String getDisplayNameString()
-	{
-		if (isOnline())
-		{
-			try
-			{
+	public final String getDisplayNameString() {
+		if (isOnline()) {
+			try {
 				return getPlayer().getDisplayNameString();
-			}
-			catch (Exception ex)
-			{
+			} catch (Exception ex) {
 			}
 		}
 
 		return getName();
 	}
 
-	public final ITextComponent getDisplayName()
-	{
-		if (isOnline())
-		{
-			try
-			{
+	public final ITextComponent getDisplayName() {
+		if (isOnline()) {
+			try {
 				return getPlayer().getDisplayName();
-			}
-			catch (Exception ex)
-			{
+			} catch (Exception ex) {
 			}
 		}
 
 		return new TextComponentString(getName());
 	}
 
-	public EntityPlayerMP getCommandPlayer(ICommandSender sender) throws CommandException
-	{
-		if (!isOnline())
-		{
+	public EntityPlayerMP getCommandPlayer(ICommandSender sender) throws CommandException {
+		if (!isOnline()) {
 			throw FTBLib.error(sender, "player_must_be_online");
 		}
 
 		return getPlayer();
 	}
 
-	public NBTDataStorage getData()
-	{
+	public NBTDataStorage getData() {
 		return dataStorage;
 	}
 
-	public boolean equalsPlayer(@Nullable ForgePlayer player)
-	{
+	public boolean equalsPlayer(@Nullable ForgePlayer player) {
 		return player == this || (player != null && getId().equals(player.getId()));
 	}
 
-	public boolean equalsPlayer(@Nullable ICommandSender player)
-	{
+	public boolean equalsPlayer(@Nullable ICommandSender player) {
 		return player instanceof EntityPlayerMP && ((EntityPlayerMP) player).getUniqueID().equals(getId());
 	}
 
 	@Override
-	public final int compareTo(ForgePlayer o)
-	{
+	public final int compareTo(ForgePlayer o) {
 		return StringUtils.IGNORE_CASE_COMPARATOR.compare(getDisplayNameString(), o.getDisplayNameString());
 	}
 
-	public final String toString()
-	{
+	public final String toString() {
 		return getName();
 	}
 
-	public final int hashCode()
-	{
+	public final int hashCode() {
 		return getId().hashCode();
 	}
 
-	public boolean equals(Object o)
-	{
+	public boolean equals(Object o) {
 		return o == this || o instanceof ForgePlayer && equalsPlayer((ForgePlayer) o);
 	}
 
-	public boolean canInteract(@Nullable ForgePlayer owner, EnumPrivacyLevel level)
-	{
-		if (level == EnumPrivacyLevel.PUBLIC || owner == null)
-		{
+	public boolean canInteract(@Nullable ForgePlayer owner, EnumPrivacyLevel level) {
+		if (level == EnumPrivacyLevel.PUBLIC || owner == null) {
 			return true;
-		}
-		else if (owner.equalsPlayer(this))
-		{
+		} else if (owner.equalsPlayer(this)) {
 			return true;
-		}
-		else if (level == EnumPrivacyLevel.PRIVATE)
-		{
+		} else if (level == EnumPrivacyLevel.PRIVATE) {
 			return false;
-		}
-		else if (level == EnumPrivacyLevel.TEAM)
-		{
+		} else if (level == EnumPrivacyLevel.TEAM) {
 			return owner.team.isAlly(this);
 		}
 
 		return false;
 	}
 
-	public boolean isOnline()
-	{
+	public boolean isOnline() {
 		return getNullablePlayer() != null;
 	}
 
 	@Nullable
-	public EntityPlayerMP getNullablePlayer()
-	{
-		if (tempPlayer != null)
-		{
+	public EntityPlayerMP getNullablePlayer() {
+		if (tempPlayer != null) {
 			return tempPlayer;
 		}
 
 		return team.universe.server.getPlayerList().getPlayerByUUID(getId());
 	}
 
-	public EntityPlayerMP getPlayer()
-	{
+	public EntityPlayerMP getPlayer() {
 		EntityPlayerMP p = getNullablePlayer();
 
-		if (p == null)
-		{
+		if (p == null) {
 			throw new NullPointerException(getName() + " is not online!");
 		}
 
 		return p;
 	}
 
-	public boolean isFake()
-	{
+	public boolean isFake() {
 		return tempPlayer instanceof FakePlayer;
 	}
 
-	public boolean isOP()
-	{
+	public boolean isOP() {
 		return ServerUtils.isOP(team.universe.server, getProfile());
 	}
 
-	void onLoggedIn(EntityPlayerMP player, Universe universe, boolean firstLogin)
-	{
+	void onLoggedIn(EntityPlayerMP player, Universe universe, boolean firstLogin) {
 		tempPlayer = player;
 
 		boolean sendTeamJoinEvent = false, sendTeamCreatedEvent = false;
 
-		if (firstLogin && (FTBLibConfig.teams.disable_teams || (player.server.isSinglePlayer() ? FTBLibConfig.teams.autocreate_sp : FTBLibConfig.teams.autocreate_mp)))
-		{
-			if (player.server.isSinglePlayer())
-			{
-				team = universe.getTeam("singleplayer");
-
-				if (!team.isValid())
-				{
-					team = new ForgeTeam(universe, (short) 2, "singleplayer", TeamType.SERVER);
-					team.setFreeToJoin(true);
-					universe.addTeam(team);
-					team.setTitle(getName());
-					team.setIcon(new PlayerHeadIcon(getId()).toString());
-					team.setColor(EnumTeamColor.NAME_MAP.getRandom(universe.world.rand));
-					team.markDirty();
-					sendTeamCreatedEvent = true;
-				}
-
-				sendTeamJoinEvent = true;
-			}
-			else
-			{
-				String id = getName().toLowerCase();
-
-				if (universe.getTeam(id).isValid())
-				{
-					id = StringUtils.fromUUID(getId());
-				}
-
-				if (!universe.getTeam(id).isValid())
-				{
-					team = new ForgeTeam(universe, universe.generateTeamUID((short) 0), id, TeamType.PLAYER);
-					team.owner = this;
-					universe.addTeam(team);
-					team.setColor(EnumTeamColor.NAME_MAP.getRandom(universe.world.rand));
-					team.markDirty();
-					sendTeamCreatedEvent = true;
-					sendTeamJoinEvent = true;
-				}
-			}
+		if (firstLogin) {
+			sendTeamCreatedEvent = true;
+			sendTeamJoinEvent = true;
 		}
 
-		if (!isFake())
-		{
+		if (!isFake()) {
 			lastTimeSeen = universe.ticks.ticks();
 			//FTBLibStats.updateLastSeen(stats());
 			new MessageSyncData(true, player, this).sendTo(player);
@@ -324,24 +234,20 @@ public class ForgePlayer implements INBTSerializable<NBTTagCompound>, Comparable
 
 		new ForgePlayerLoggedInEvent(this).post();
 
-		if (sendTeamCreatedEvent)
-		{
+		if (sendTeamCreatedEvent) {
 			new ForgeTeamCreatedEvent(team).post();
 		}
 
-		if (sendTeamJoinEvent)
-		{
+		if (sendTeamJoinEvent) {
 			ForgeTeamPlayerJoinedEvent event = new ForgeTeamPlayerJoinedEvent(this);
 			event.post();
 
-			if (event.getDisplayGui() != null)
-			{
+			if (event.getDisplayGui() != null) {
 				event.getDisplayGui().run();
 			}
 		}
 
-		if (!hideTeamNotification() && !hasTeam())
-		{
+		if (!hideTeamNotification() && !hasTeam()) {
 			ITextComponent b1 = FTBLib.lang(player, "click_here");
 			b1.getStyle().setColor(TextFormatting.GOLD);
 			b1.getStyle().setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/ftblib_simulate_button custom:ftblib:my_team_gui"));
@@ -358,8 +264,7 @@ public class ForgePlayer implements INBTSerializable<NBTTagCompound>, Comparable
 		markDirty();
 	}
 
-	void onLoggedOut(EntityPlayerMP p)
-	{
+	void onLoggedOut(EntityPlayerMP p) {
 		tempPlayer = p;
 		lastTimeSeen = p.world.getTotalWorldTime();
 		new ForgePlayerLoggedOutEvent(this).post();
@@ -368,10 +273,8 @@ public class ForgePlayer implements INBTSerializable<NBTTagCompound>, Comparable
 		markDirty();
 	}
 
-	public StatisticsManagerServer stats()
-	{
-		if (playerForStats == null)
-		{
+	public StatisticsManagerServer stats() {
+		if (playerForStats == null) {
 			playerForStats = new FakePlayer(team.universe.world, ServerUtils.FAKE_PLAYER_PROFILE);
 		}
 
@@ -380,10 +283,8 @@ public class ForgePlayer implements INBTSerializable<NBTTagCompound>, Comparable
 		return team.universe.server.getPlayerList().getPlayerStatsFile(playerForStats);
 	}
 
-	public ConfigGroup getSettings()
-	{
-		if (cachedConfig == null)
-		{
+	public ConfigGroup getSettings() {
+		if (cachedConfig == null) {
 			cachedConfig = ConfigGroup.newGroup("player_config");
 			cachedConfig.setDisplayName(new TextComponentTranslation("player_config"));
 			ForgePlayerConfigEvent event = new ForgePlayerConfigEvent(this, cachedConfig);
@@ -397,131 +298,75 @@ public class ForgePlayer implements INBTSerializable<NBTTagCompound>, Comparable
 		return cachedConfig;
 	}
 
-	public NBTTagCompound getPlayerNBT()
-	{
-		if (isOnline())
-		{
-			NBTTagCompound nbt = new NBTTagCompound();
-			getPlayer().writeToNBT(nbt);
-			return nbt;
-		}
-
-		if (cachedPlayerNBT == null)
-		{
-			try (InputStream stream = new FileInputStream(new File(team.universe.getWorldDirectory(), "playerdata/" + getId() + ".dat")))
-			{
-				cachedPlayerNBT = CompressedStreamTools.readCompressed(stream);
-			}
-			catch (Exception ex)
-			{
-				ex.printStackTrace();
-			}
-		}
-
-		if (cachedPlayerNBT == null)
-		{
-			cachedPlayerNBT = new NBTTagCompound();
-		}
-
-		return cachedPlayerNBT;
+	public NBTTagCompound getPlayerNBT() {
+		return getPlayerIfExists(this.getId().toString());
 	}
 
-	public void setPlayerNBT(NBTTagCompound nbt)
-	{
-		if (isOnline())
-		{
-			EntityPlayerMP player = getPlayer();
-			player.deserializeNBT(nbt);
+	public void setPlayerNBT(NBTTagCompound nbt) {
+		short teamUID = nbt.getShort("TeamUID");
+		String teamID = nbt.getString("TeamID");
+		String uuid = nbt.getString("UUID");
+		String nick = nbt.getString("Name");
 
-			if (player.isEntityAlive())
-			{
-				player.world.updateEntityWithOptionalForce(player, true);
-			}
-		}
-		else
-		{
-			try (FileOutputStream stream = new FileOutputStream(new File(team.universe.getWorldDirectory(), "playerdata/" + getId() + ".dat")))
-			{
-				CompressedStreamTools.writeCompressed(nbt, stream);
-			}
-			catch (Exception ex)
-			{
-				ex.printStackTrace();
-			}
-		}
-
-		markDirty();
+		updatePlayer(teamUID, teamID, uuid, nick, nbt);
 	}
 
-	public boolean hideTeamNotification()
-	{
+	public boolean hideTeamNotification() {
 		return FTBLibConfig.teams.hide_team_notification || hideTeamNotification || isFake();
 	}
 
-	public long getLastTimeSeen()
-	{
+	public long getLastTimeSeen() {
 		return isOnline() ? team.universe.ticks.ticks() : lastTimeSeen;
 	}
 
-	public boolean hasPermission(String node, @Nullable IContext context)
-	{
+	public boolean hasPermission(String node, @Nullable IContext context) {
 		return PermissionAPI.hasPermission(getProfile(), node, context);
 	}
 
-	public IContext getContext()
-	{
-		if (isOnline())
-		{
+	public IContext getContext() {
+		if (isOnline()) {
 			return new PlayerContext(getPlayer());
 		}
 
 		return new WorldContext(team.universe.world);
 	}
 
-	public boolean hasPermission(String node)
-	{
+	public boolean hasPermission(String node) {
 		return PermissionAPI.hasPermission(getProfile(), node, getContext());
 	}
 
-	public ConfigValue getRankConfig(String node)
-	{
+	public ConfigValue getRankConfig(String node) {
 		return RankConfigAPI.get(team.universe.server, getProfile(), node);
 	}
 
-	public File getDataFile(String ext)
-	{
-		File dir = new File(team.universe.getWorldDirectory(), "data/ftb_lib/players/");
-
-		if (ext.isEmpty())
-		{
-			return new File(dir, getName().toLowerCase() + ".dat");
-		}
-
-		File extFolder = new File(dir, ext);
-
-		if (!extFolder.exists())
-		{
-			extFolder.mkdirs();
-		}
-
-		File extFile = new File(extFolder, getName().toLowerCase() + ".dat");
-
-		if (!extFile.exists())
-		{
-			File oldExtFile = new File(dir, getName().toLowerCase() + "." + ext + ".dat");
-
-			if (oldExtFile.exists())
-			{
-				oldExtFile.renameTo(extFile);
-			}
-		}
-
-		return extFile;
-	}
+//    public File getDataFile(String ext) {
+//        File dir = new File(team.universe.getWorldDirectory(), "data/ftb_lib/players/");
+//
+//        if (ext.isEmpty()) {
+//            return new File(dir, getName().toLowerCase() + ".dat");
+//        }
+//
+//        File extFolder = new File(dir, ext);
+//
+//        if (!extFolder.exists()) {
+//            extFolder.mkdirs();
+//        }
+//
+//        File extFile = new File(extFolder, getName().toLowerCase() + ".dat");
+//
+//        if (!extFile.exists()) {
+//            File oldExtFile = new File(dir, getName().toLowerCase() + "." + ext + ".dat");
+//
+//            if (oldExtFile.exists()) {
+//                oldExtFile.renameTo(extFile);
+//            }
+//        }
+//
+//        return extFile;
+//    }
 
 	@Override
-	public void onConfigSaved(ConfigGroup group, ICommandSender sender)
-	{
+	public void onConfigSaved(ConfigGroup group, ICommandSender sender) {
 		clearCache();
 		markDirty();
 		new ForgePlayerConfigSavedEvent(this, group, sender).post();

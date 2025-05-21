@@ -9,14 +9,13 @@ import java.util.Collection;
 /**
  * @author LatvianModder
  */
-public interface IRankConfigHandler
-{
-	void registerRankConfig(RankConfigValueInfo info);
+public interface IRankConfigHandler {
+    void registerRankConfig(RankConfigValueInfo info);
 
-	Collection<RankConfigValueInfo> getRegisteredConfigs();
+    Collection<RankConfigValueInfo> getRegisteredConfigs();
 
-	ConfigValue getConfigValue(MinecraftServer server, GameProfile profile, String node);
+    ConfigValue getConfigValue(MinecraftServer server, GameProfile profile, String node);
 
-	@Nullable
-	RankConfigValueInfo getInfo(String node);
+    @Nullable
+    RankConfigValueInfo getInfo(String node);
 }

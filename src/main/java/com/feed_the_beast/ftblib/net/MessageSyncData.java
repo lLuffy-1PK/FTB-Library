@@ -26,82 +26,70 @@ import java.util.UUID;
 /**
  * @author LatvianModder
  */
-public class MessageSyncData extends MessageToClient
-{
-	private static final int LOGIN = 1;
+public class MessageSyncData extends MessageToClient {
+    private static final int LOGIN = 1;
 
-	private int flags;
-	private UUID universeId;
-	private NBTTagCompound syncData;
-	private Map<String, String> gamerules;
+    private int flags;
+    private UUID universeId;
+    private NBTTagCompound syncData;
+    private Map<String, String> gamerules;
 
-	public MessageSyncData()
-	{
-	}
+    public MessageSyncData() {
+    }
 
-	public MessageSyncData(boolean login, EntityPlayerMP player, ForgePlayer forgePlayer)
-	{
-		flags = Bits.setFlag(0, LOGIN, login);
-		universeId = forgePlayer.team.universe.getUUID();
-		syncData = new NBTTagCompound();
+    public MessageSyncData(boolean login, EntityPlayerMP player, ForgePlayer forgePlayer) {
+        flags = Bits.setFlag(0, LOGIN, login);
+        universeId = forgePlayer.team.universe.getUUID();
+        syncData = new NBTTagCompound();
 
-		for (Map.Entry<String, ISyncData> entry : FTBLibCommon.SYNCED_DATA.entrySet())
-		{
-			syncData.setTag(entry.getKey(), entry.getValue().writeSyncData(player, forgePlayer));
-		}
+        for (Map.Entry<String, ISyncData> entry : FTBLibCommon.SYNCED_DATA.entrySet()) {
+            syncData.setTag(entry.getKey(), entry.getValue().writeSyncData(player, forgePlayer));
+        }
 
-		gamerules = new HashMap<>();
-		new SyncGamerulesEvent(gamerule -> gamerules.put(gamerule, player.world.getGameRules().getString(gamerule))).post();
-	}
+        gamerules = new HashMap<>();
+        new SyncGamerulesEvent(gamerule -> gamerules.put(gamerule, player.world.getGameRules().getString(gamerule))).post();
+    }
 
-	@Override
-	public NetworkWrapper getWrapper()
-	{
-		return FTBLibNetHandler.GENERAL;
-	}
+    @Override
+    public NetworkWrapper getWrapper() {
+        return FTBLibNetHandler.GENERAL;
+    }
 
-	@Override
-	public void writeData(DataOut data)
-	{
-		data.writeVarInt(flags);
-		data.writeUUID(universeId);
-		data.writeNBT(syncData);
-		data.writeMap(gamerules, DataOut.STRING, DataOut.STRING);
-	}
+    @Override
+    public void writeData(DataOut data) {
+        data.writeVarInt(flags);
+        data.writeUUID(universeId);
+        data.writeNBT(syncData);
+        data.writeMap(gamerules, DataOut.STRING, DataOut.STRING);
+    }
 
-	@Override
-	public void readData(DataIn data)
-	{
-		flags = data.readVarInt();
-		universeId = data.readUUID();
-		syncData = data.readNBT();
-		gamerules = data.readMap(DataIn.STRING, DataIn.STRING);
-	}
+    @Override
+    public void readData(DataIn data) {
+        flags = data.readVarInt();
+        universeId = data.readUUID();
+        syncData = data.readNBT();
+        gamerules = data.readMap(DataIn.STRING, DataIn.STRING);
+    }
 
-	@Override
-	@SideOnly(Side.CLIENT)
-	public void onMessage()
-	{
-		SidedUtils.UNIVERSE_UUID_CLIENT = universeId;
+    @Override
+    @SideOnly(Side.CLIENT)
+    public void onMessage() {
+        SidedUtils.UNIVERSE_UUID_CLIENT = universeId;
 
-		for (String key : syncData.getKeySet())
-		{
-			ISyncData nbt = FTBLibCommon.SYNCED_DATA.get(key);
+        for (String key : syncData.getKeySet()) {
+            ISyncData nbt = FTBLibCommon.SYNCED_DATA.get(key);
 
-			if (nbt != null)
-			{
-				nbt.readSyncData(syncData.getCompoundTag(key));
-			}
-		}
+            if (nbt != null) {
+                nbt.readSyncData(syncData.getCompoundTag(key));
+            }
+        }
 
-		for (Map.Entry<String, String> entry : gamerules.entrySet())
-		{
-			Minecraft.getMinecraft().world.getGameRules().setOrCreateGameRule(entry.getKey(), entry.getValue());
-		}
+        for (Map.Entry<String, String> entry : gamerules.entrySet()) {
+            Minecraft.getMinecraft().world.getGameRules().setOrCreateGameRule(entry.getKey(), entry.getValue());
+        }
 
-		if (FTBLibConfig.debugging.print_more_info && Bits.getFlag(flags, LOGIN))
-		{
-			FTBLib.LOGGER.info("Synced data from universe " + StringUtils.fromUUID(SidedUtils.UNIVERSE_UUID_CLIENT));
-		}
-	}
+        if (FTBLibConfig.debugging.print_more_info && Bits.getFlag(flags, LOGIN)) {
+            FTBLib.LOGGER.info("Synced data from universe " + StringUtils.fromUUID(SidedUtils.UNIVERSE_UUID_CLIENT));
+        }
+    }
 }

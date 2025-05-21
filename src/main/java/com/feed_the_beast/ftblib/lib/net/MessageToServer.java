@@ -9,16 +9,13 @@ import net.minecraftforge.fml.relauncher.Side;
 /**
  * @author LatvianModder
  */
-public abstract class MessageToServer extends MessageBase
-{
-	public final void sendToServer()
-	{
-		FMLEmbeddedChannel channel = getWrapper().getChannel(Side.CLIENT);
-		channel.attr(FMLOutboundHandler.FML_MESSAGETARGET).set(FMLOutboundHandler.OutboundTarget.TOSERVER);
-		channel.writeAndFlush(this).addListener(ChannelFutureListener.FIRE_EXCEPTION_ON_FAILURE);
-	}
+public abstract class MessageToServer extends MessageBase {
+    public final void sendToServer() {
+        FMLEmbeddedChannel channel = getWrapper().getChannel(Side.CLIENT);
+        channel.attr(FMLOutboundHandler.FML_MESSAGETARGET).set(FMLOutboundHandler.OutboundTarget.TOSERVER);
+        channel.writeAndFlush(this).addListener(ChannelFutureListener.FIRE_EXCEPTION_ON_FAILURE);
+    }
 
-	public void onMessage(EntityPlayerMP player)
-	{
-	}
+    public void onMessage(EntityPlayerMP player) {
+    }
 }

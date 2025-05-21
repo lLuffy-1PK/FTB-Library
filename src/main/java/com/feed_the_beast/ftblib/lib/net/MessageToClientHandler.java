@@ -9,14 +9,12 @@ import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
 /**
  * @author LatvianModder
  */
-enum MessageToClientHandler implements IMessageHandler<MessageToClient, IMessage>
-{
-	INSTANCE;
+enum MessageToClientHandler implements IMessageHandler<MessageToClient, IMessage> {
+    INSTANCE;
 
-	@Override
-	public IMessage onMessage(MessageToClient message, MessageContext context)
-	{
-		FMLCommonHandler.instance().getWorldThread(context.netHandler).addScheduledTask(() -> FTBLib.PROXY.handleClientMessage(message));
-		return null;
-	}
+    @Override
+    public IMessage onMessage(MessageToClient message, MessageContext context) {
+        FMLCommonHandler.instance().getWorldThread(context.netHandler).addScheduledTask(() -> FTBLib.PROXY.handleClientMessage(message));
+        return null;
+    }
 }

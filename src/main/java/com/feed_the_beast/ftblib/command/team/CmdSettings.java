@@ -14,36 +14,29 @@ import net.minecraft.entity.player.EntityPlayerMP;
 /**
  * @author LatvianModder
  */
-public class CmdSettings extends CmdEditConfigBase
-{
-	public CmdSettings()
-	{
-		super("settings", Level.ALL);
-	}
+public class CmdSettings extends CmdEditConfigBase {
+    public CmdSettings() {
+        super("settings", Level.ALL);
+    }
 
-	@Override
-	public ConfigGroup getGroup(ICommandSender sender) throws CommandException
-	{
-		EntityPlayerMP player = getCommandSenderAsPlayer(sender);
-		ForgePlayer p = CommandUtils.getForgePlayer(player);
+    @Override
+    public ConfigGroup getGroup(ICommandSender sender) throws CommandException {
+        EntityPlayerMP player = getCommandSenderAsPlayer(sender);
+        ForgePlayer p = CommandUtils.getForgePlayer(player);
 
-		if (!p.hasTeam())
-		{
-			FTBLibAPI.sendCloseGuiPacket(player);
-			throw FTBLib.error(sender, "ftblib.lang.team.error.no_team");
-		}
-		else if (!p.team.isModerator(p))
-		{
-			FTBLibAPI.sendCloseGuiPacket(player);
-			throw new CommandException("commands.generic.permission");
-		}
+        if (!p.hasTeam()) {
+            FTBLibAPI.sendCloseGuiPacket(player);
+            throw FTBLib.error(sender, "ftblib.lang.team.error.no_team");
+        } else if (!p.team.isModerator(p)) {
+            FTBLibAPI.sendCloseGuiPacket(player);
+            throw new CommandException("commands.generic.permission");
+        }
 
-		return p.team.getSettings();
-	}
+        return p.team.getSettings();
+    }
 
-	@Override
-	public IConfigCallback getCallback(ICommandSender sender) throws CommandException
-	{
-		return CommandUtils.getForgePlayer(sender).team;
-	}
+    @Override
+    public IConfigCallback getCallback(ICommandSender sender) throws CommandException {
+        return CommandUtils.getForgePlayer(sender).team;
+    }
 }

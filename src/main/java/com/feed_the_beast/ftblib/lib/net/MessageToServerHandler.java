@@ -10,23 +10,20 @@ import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
 /**
  * @author LatvianModder
  */
-enum MessageToServerHandler implements IMessageHandler<MessageToServer, IMessage>
-{
-	INSTANCE;
+enum MessageToServerHandler implements IMessageHandler<MessageToServer, IMessage> {
+    INSTANCE;
 
-	@Override
-	public IMessage onMessage(MessageToServer message, MessageContext context)
-	{
-		FMLCommonHandler.instance().getWorldThread(context.netHandler).addScheduledTask(() ->
-		{
-			if (FTBLibConfig.debugging.log_network)
-			{
-				FTBLib.LOGGER.info("Net TX: " + message.getClass().getName());
-			}
+    @Override
+    public IMessage onMessage(MessageToServer message, MessageContext context) {
+        FMLCommonHandler.instance().getWorldThread(context.netHandler).addScheduledTask(() ->
+        {
+            if (FTBLibConfig.debugging.log_network) {
+                FTBLib.LOGGER.info("Net TX: " + message.getClass().getName());
+            }
 
-			message.onMessage(context.getServerHandler().player);
-		});
+            message.onMessage(context.getServerHandler().player);
+        });
 
-		return null;
-	}
+        return null;
+    }
 }

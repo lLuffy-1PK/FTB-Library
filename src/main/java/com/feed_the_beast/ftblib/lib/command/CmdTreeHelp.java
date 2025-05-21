@@ -14,41 +14,34 @@ import java.util.Map;
 /**
  * @author LatvianModder
  */
-public class CmdTreeHelp extends CommandHelp
-{
-	private final CommandTreeBase parent;
+public class CmdTreeHelp extends CommandHelp {
+    private final CommandTreeBase parent;
 
-	public CmdTreeHelp(CommandTreeBase parent)
-	{
-		this.parent = parent;
-	}
+    public CmdTreeHelp(CommandTreeBase parent) {
+        this.parent = parent;
+    }
 
-	@Override
-	public boolean checkPermission(MinecraftServer server, ICommandSender sender)
-	{
-		return true;
-	}
+    @Override
+    public boolean checkPermission(MinecraftServer server, ICommandSender sender) {
+        return true;
+    }
 
-	@Override
-	protected List<ICommand> getSortedPossibleCommands(ICommandSender sender, MinecraftServer server)
-	{
-		List<ICommand> list = new ArrayList<>();
+    @Override
+    protected List<ICommand> getSortedPossibleCommands(ICommandSender sender, MinecraftServer server) {
+        List<ICommand> list = new ArrayList<>();
 
-		for (ICommand command : parent.getSubCommands())
-		{
-			if (command.checkPermission(server, sender))
-			{
-				list.add(command);
-			}
-		}
+        for (ICommand command : parent.getSubCommands()) {
+            if (command.checkPermission(server, sender)) {
+                list.add(command);
+            }
+        }
 
-		Collections.sort(list);
-		return list;
-	}
+        Collections.sort(list);
+        return list;
+    }
 
-	@Override
-	protected Map<String, ICommand> getCommandMap(MinecraftServer server)
-	{
-		return parent.getCommandMap();
-	}
+    @Override
+    protected Map<String, ICommand> getCommandMap(MinecraftServer server) {
+        return parent.getCommandMap();
+    }
 }

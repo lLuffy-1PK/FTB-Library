@@ -10,22 +10,18 @@ import net.minecraft.command.ICommandSender;
 /**
  * @author LatvianModder
  */
-public class CmdMySettings extends CmdEditConfigBase
-{
-	public CmdMySettings()
-	{
-		super("my_settings", Level.ALL);
-	}
+public class CmdMySettings extends CmdEditConfigBase {
+    public CmdMySettings() {
+        super("my_settings", Level.ALL);
+    }
 
-	@Override
-	public ConfigGroup getGroup(ICommandSender sender) throws CommandException
-	{
-		return CommandUtils.getForgePlayer(sender).getSettings();
-	}
+    @Override
+    public ConfigGroup getGroup(ICommandSender sender) throws CommandException {
+        return CommandUtils.getForgePlayer(sender).getSettings();
+    }
 
-	@Override
-	public IConfigCallback getCallback(ICommandSender sender) throws CommandException
-	{
-		return CommandUtils.getForgePlayer(sender);
-	}
+    @Override
+    public IConfigCallback getCallback(ICommandSender sender) throws CommandException {
+        return CommandUtils.getForgePlayer(sender);
+    }
 }

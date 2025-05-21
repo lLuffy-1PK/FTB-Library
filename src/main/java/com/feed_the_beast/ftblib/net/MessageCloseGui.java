@@ -11,27 +11,21 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 /**
  * @author LatvianModder
  */
-public class MessageCloseGui extends MessageToClient
-{
-	@Override
-	public NetworkWrapper getWrapper()
-	{
-		return FTBLibNetHandler.GENERAL;
-	}
+public class MessageCloseGui extends MessageToClient {
+    @Override
+    public NetworkWrapper getWrapper() {
+        return FTBLibNetHandler.GENERAL;
+    }
 
-	@Override
-	@SideOnly(Side.CLIENT)
-	public void onMessage()
-	{
-		Minecraft mc = Minecraft.getMinecraft();
+    @Override
+    @SideOnly(Side.CLIENT)
+    public void onMessage() {
+        Minecraft mc = Minecraft.getMinecraft();
 
-		if (mc.currentScreen instanceof IGuiWrapper)
-		{
-			((IGuiWrapper) mc.currentScreen).getGui().closeGui();
-		}
-		else if (!(mc.currentScreen instanceof GuiChat))
-		{
-			mc.player.closeScreen();
-		}
-	}
+        if (mc.currentScreen instanceof IGuiWrapper) {
+            ((IGuiWrapper) mc.currentScreen).getGui().closeGui();
+        } else if (!(mc.currentScreen instanceof GuiChat)) {
+            mc.player.closeScreen();
+        }
+    }
 }

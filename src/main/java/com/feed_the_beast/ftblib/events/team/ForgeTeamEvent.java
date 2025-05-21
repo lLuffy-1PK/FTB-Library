@@ -8,18 +8,15 @@ import java.util.Objects;
 /**
  * @author LatvianModder
  */
-public class ForgeTeamEvent extends UniverseEvent
-{
-	private final ForgeTeam team;
+public class ForgeTeamEvent extends UniverseEvent {
+    private final ForgeTeam team;
 
-	public ForgeTeamEvent(ForgeTeam t)
-	{
-		super(t.universe);
-		team = Objects.requireNonNull(t, "Null ForgeTeam in ForgeTeamEvent!");
-	}
+    public ForgeTeamEvent(ForgeTeam t) {
+        super(t.universe);
+        team = Objects.requireNonNull(t, "Null ForgeTeam in ForgeTeamEvent!");
+    }
 
-	public ForgeTeam getTeam()
-	{
-		return team;
-	}
+    public ForgeTeam getTeam() {
+        return team;
+    }
 }

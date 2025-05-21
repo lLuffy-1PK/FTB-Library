@@ -8,10 +8,9 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 /**
  * @author LatvianModder
  */
-public interface ISyncData
-{
-	NBTTagCompound writeSyncData(EntityPlayerMP player, ForgePlayer forgePlayer);
+public interface ISyncData {
+    NBTTagCompound writeSyncData(EntityPlayerMP player, ForgePlayer forgePlayer);
 
-	@SideOnly(Side.CLIENT)
-	void readSyncData(NBTTagCompound nbt);
+    @SideOnly(Side.CLIENT)
+    void readSyncData(NBTTagCompound nbt);
 }

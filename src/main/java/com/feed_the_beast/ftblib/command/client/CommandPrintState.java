@@ -13,27 +13,23 @@ import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraft.util.text.event.ClickEvent;
 
-public class CommandPrintState extends CmdBase
-{
-	public CommandPrintState()
-	{
-		super("print_block_state", Level.ALL);
-	}
+public class CommandPrintState extends CmdBase {
+    public CommandPrintState() {
+        super("print_block_state", Level.ALL);
+    }
 
-	@Override
-	public void execute(MinecraftServer server, ICommandSender sender, final String[] args) throws CommandException
-	{
-		RayTraceResult ray = Minecraft.getMinecraft().objectMouseOver;
-		if (ray.typeOfHit != RayTraceResult.Type.BLOCK)
-		{
-			return;
-		}
+    @Override
+    public void execute(MinecraftServer server, ICommandSender sender, final String[] args) throws CommandException {
+        RayTraceResult ray = Minecraft.getMinecraft().objectMouseOver;
+        if (ray.typeOfHit != RayTraceResult.Type.BLOCK) {
+            return;
+        }
 
-		BlockPos pos = ray.getBlockPos();
-		IBlockState state = sender.getEntityWorld().getBlockState(pos);
+        BlockPos pos = ray.getBlockPos();
+        IBlockState state = sender.getEntityWorld().getBlockState(pos);
 
-		ITextComponent component = new TextComponentString(state.getBlock().getPickBlock(state, ray, sender.getEntityWorld(), pos, Minecraft.getMinecraft().player).getDisplayName() + " :: " + BlockUtils.getNameFromState(state));
-		component.getStyle().setClickEvent(new ClickEvent(ClickEvent.Action.SUGGEST_COMMAND, BlockUtils.getNameFromState(state)));
-		sender.sendMessage(component);
-	}
+        ITextComponent component = new TextComponentString(state.getBlock().getPickBlock(state, ray, sender.getEntityWorld(), pos, Minecraft.getMinecraft().player).getDisplayName() + " :: " + BlockUtils.getNameFromState(state));
+        component.getStyle().setClickEvent(new ClickEvent(ClickEvent.Action.SUGGEST_COMMAND, BlockUtils.getNameFromState(state)));
+        sender.sendMessage(component);
+    }
 }

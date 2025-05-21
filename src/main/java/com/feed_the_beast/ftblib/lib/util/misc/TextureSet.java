@@ -15,75 +15,62 @@ import java.util.Map;
 /**
  * @author LatvianModder
  */
-public class TextureSet
-{
-	public static final TextureSet DEFAULT = TextureSet.of("all=blocks/planks_oak");
+public class TextureSet {
+    public static final TextureSet DEFAULT = TextureSet.of("all=blocks/planks_oak");
 
-	public static TextureSet of(String v)
-	{
-		TextureSet set = new TextureSet();
-		Map<String, String> map = StringUtils.parse(StringUtils.TEMP_MAP, v);
+    public static TextureSet of(String v) {
+        TextureSet set = new TextureSet();
+        Map<String, String> map = StringUtils.parse(StringUtils.TEMP_MAP, v);
 
-		String s = map.get("all");
+        String s = map.get("all");
 
-		if (s != null)
-		{
-			ResourceLocation tex = new ResourceLocation(s);
+        if (s != null) {
+            ResourceLocation tex = new ResourceLocation(s);
 
-			for (int i = 0; i < 6; i++)
-			{
-				set.textures[i] = tex;
-			}
-		}
+            for (int i = 0; i < 6; i++) {
+                set.textures[i] = tex;
+            }
+        }
 
-		for (EnumFacing facing : EnumFacing.VALUES)
-		{
-			s = map.get(facing.getName());
+        for (EnumFacing facing : EnumFacing.VALUES) {
+            s = map.get(facing.getName());
 
-			if (s != null)
-			{
-				set.textures[facing.ordinal()] = new ResourceLocation(s);
-			}
-		}
+            if (s != null) {
+                set.textures[facing.ordinal()] = new ResourceLocation(s);
+            }
+        }
 
-		return set;
-	}
+        return set;
+    }
 
-	public static TextureSet of(JsonElement json)
-	{
-		return of(json.getAsString());
-	}
+    public static TextureSet of(JsonElement json) {
+        return of(json.getAsString());
+    }
 
-	public static TextureSet of(IBlockState state)
-	{
-		return DEFAULT; //FIXME
-	}
+    public static TextureSet of(IBlockState state) {
+        return DEFAULT; //FIXME
+    }
 
-	public final ResourceLocation[] textures;
+    public final ResourceLocation[] textures;
 
-	private TextureSet()
-	{
-		textures = new ResourceLocation[6];
-	}
+    private TextureSet() {
+        textures = new ResourceLocation[6];
+    }
 
-	@Nullable
-	public ResourceLocation getTexture(EnumFacing face)
-	{
-		return textures[face.ordinal()];
-	}
+    @Nullable
+    public ResourceLocation getTexture(EnumFacing face) {
+        return textures[face.ordinal()];
+    }
 
-	public Collection<ResourceLocation> getTextures()
-	{
-		List<ResourceLocation> list = new ArrayList<>();
+    public Collection<ResourceLocation> getTextures() {
+        List<ResourceLocation> list = new ArrayList<>();
 
-		for (int i = 0; i < 6; i++)
-		{
-			if (textures[i] != null)
-			{
-				list.add(textures[i]);
-			}
-		}
+        for (int i = 0; i < 6; i++) {
+            if (textures[i] != null) {
+                list.add(textures[i]);
+            }
+        }
 
-		return list;
-	}
+        return list;
+    }
 }
